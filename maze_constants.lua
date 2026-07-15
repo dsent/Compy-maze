@@ -56,6 +56,11 @@ PLAN_PROMPT = "Press Enter to go!"
 
 FIELD_MARGIN = 3
 
+-- How long a plan run that missed the goal holds the
+-- robot at its end position before the level resets.
+
+PLAN_MISS_HOLD = 1.0
+
 -- Maze steps run ~20% slower than the shared core
 -- default, tuned for the 4-6 bracket.
 

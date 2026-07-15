@@ -82,11 +82,12 @@ plan is ready, press Enter: the robot follows it step
 by step, and each key lights up green as the robot
 does it.
 
-If the plan ends before the goal, add more keys and
-press Enter again — the robot carries on from where
-it stopped. Press Tab to send the robot back to the
-start; your plan stays, and the next Enter runs it
-from the beginning.
+If the plan ends anywhere but the goal, the robot
+pauses so you can see how far it got, then returns
+to the start. Your plan stays, all keys green from
+the run. Change it with Backspace, or add more keys,
+and press Enter — the whole plan runs again from the
+start.
 
 If the robot hits a wall, the key that went wrong
 turns red and the keys after it go dark. The robot

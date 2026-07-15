@@ -317,8 +317,7 @@ function plan_tile_bg(i)
   if p.crash_at then
     return plan_crash_bg(i, p.crash_at)
   end
-  local won = GS.won or GS.celebrating
-  if won or i <= p.done then
+  if plan_won() or p.ran or i <= p.done then
     return Color.with_alpha(Color[Color.green], 0.85)
   end
   local exec = GS.running and i == p.exec

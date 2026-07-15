@@ -7,8 +7,11 @@
 
 -- Plan state lives in GS.plan: buf holds command chars,
 -- done counts tiles already executed (shown green), exec
--- is the tile animating now, crash_at keeps the crash
--- display until the next edit or submit.
+-- is the tile animating now. A run either wins or sends
+-- the robot home: crash_at keeps the crash display and
+-- ran keeps the all-green missed-run display, both until
+-- the next edit or submit; hold delays the miss reset so
+-- the end position can be seen.
 
 plan_held = { }
 
@@ -38,10 +41,12 @@ function plan_locked()
   return GS.running or GS.celebrating or GS.won
 end
 
--- An edit clears the previous run's crash display.
+-- An edit clears the previous run's crash or missed-run
+-- display.
 
 function plan_clear_marks()
   GS.plan.crash_at = nil
+  GS.plan.ran = nil
   GS.crash = nil
 end
 
@@ -75,9 +80,8 @@ function plan_enqueue(i)
   sfx.ping()
 end
 
--- Enter queues only the not-yet-run tiles, continuing
--- from where the robot stands; after a crash the level
--- was reset, so the whole plan runs again from the start.
+-- Enter runs the plan from the start: any earlier run
+-- ended in a reset, so the robot is home and done is 0.
 
 function plan_submit()
   local p = GS.plan
@@ -167,21 +171,57 @@ function plan_run_over()
   return GS.running and not busy
 end
 
--- A run that ends short of the goal re-enables input:
--- the child appends more commands and runs again. A
--- crash was already handled by plan_after_crash.
+function plan_won()
+  return GS.won or GS.celebrating
+end
 
-function plan_update()
+-- A run that misses the goal holds the end position for
+-- a beat, then sends the robot home. The whole plan is
+-- pending again, shown all green until the next edit.
+
+function plan_miss_reset()
+  local p = GS.plan
+  p.hold = nil
+  p.exec = nil
+  p.ran = true
+  GS.running = false
+  reset_level()
+end
+
+function plan_holding(dt)
+  local p = GS.plan
+  if not p.hold then
+    return false
+  end
+  p.hold = p.hold - dt
+  if p.hold <= 0 then
+    plan_miss_reset()
+  end
+  return true
+end
+
+-- Ends of runs: a win locks input for the celebration, a
+-- crash was already handled by plan_after_crash, and a
+-- miss starts the hold.
+
+function plan_update(dt)
   plan_track_exec()
+  if plan_holding(dt) then
+    return
+  end
   if not plan_run_over() then
     return
   end
-  GS.running = false
   local p = GS.plan
-  if not GS.crash then
-    p.done = p.exec or p.done
+  if GS.crash or plan_won() then
+    GS.running = false
+    if not GS.crash then
+      p.done = p.exec or p.done
+    end
+    p.exec = nil
+    return
   end
-  p.exec = nil
+  p.hold = PLAN_MISS_HOLD
 end
 
 -- Crash: snapshot the failed tile for the display, then

@@ -118,7 +118,7 @@ function love.update(dt)
   poll_tab_progression()
   step_program(dt)
   if ctrl_update then
-    ctrl_update()
+    ctrl_update(dt)
   end
 end
 
