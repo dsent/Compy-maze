@@ -51,6 +51,11 @@ MAX_PLAN_LEN = 20
 PLAN_ROW_LEN = 10
 PLAN_PROMPT = "Press Enter to go!"
 
+-- Gap between the field and the HUD zones that box it
+-- in (plan dock, compass column, editor console).
+
+FIELD_MARGIN = 3
+
 -- Maze steps run ~20% slower than the shared core
 -- default, tuned for the 4-6 bracket.
 

@@ -194,11 +194,11 @@ function plan_after_crash()
   reset_level()
 end
 
--- Overlay strip: two tile rows, ten tiles each, at the
+-- Dock strip: two tile rows, ten tiles each, at the
 -- keyboard game's natural key size, anchored to the
--- bottom edge over the full-screen maze. All metrics
--- derive from the keycap scale so they are independent
--- of whatever font is active.
+-- bottom edge below the field. All metrics derive from
+-- the keycap scale so they are independent of whatever
+-- font is active.
 
 function plan_tile_w()
   return STD_W * SCALE
@@ -214,13 +214,4 @@ end
 
 function plan_zone_h()
   return 2 * plan_tile_h() + 3 * plan_gap()
-end
-
--- The maze shifts up by one tile row on plan levels: the
--- strip's first row then overlaps only the bottom boundary
--- wall, and its second row lies below the maze, so no
--- playable cell is ever covered.
-
-function plan_pad_bottom()
-  return plan_tile_h() + plan_gap()
 end

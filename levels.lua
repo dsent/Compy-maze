@@ -1,15 +1,15 @@
 -- levels.lua
 
 -- Each level is an array of strings with attributes.
+-- `#` is a wall; the grid edge blocks like a wall, so
+-- levels list only the playable area.
 
 -- Level 1: straight line, 2-3 moves
 
 intro = {
-  "####",
-  "#* #",
-  "#  #",
-  "#N #",
-  "####",
+  "* ",
+  "  ",
+  "N ",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -20,11 +20,9 @@ intro = {
 -- Level 2: one turn
 
 one_turn = {
-  "#####",
-  "#  *#",
-  "#   #",
-  "#N  #",
-  "#####",
+  "  *",
+  "   ",
+  "N  ",
   legend = LEGEND_FULL,
   background = bg2
 }
@@ -32,25 +30,21 @@ one_turn = {
 -- Level 3: two turns, longer path
 
 two_turns = {
-  "#####",
-  "#*  #",
-  "# ###",
-  "#   #",
-  "### #",
-  "#  N#",
-  "#####",
+  "*  ",
+  " ##",
+  "   ",
+  "## ",
+  "  N",
   legend = LEGEND_FULL,
   background = bg3
 }
 
 two_turns2 = {
-  "#####",
-  "#*  #",
-  "# ###",
-  "#   #",
-  "### #",
-  "#  N#",
-  "#####",
+  "*  ",
+  " ##",
+  "   ",
+  "## ",
+  "  N",
   controls = editor,
   progression = portal,
   legend = LEGEND_FULL,
@@ -60,13 +54,11 @@ two_turns2 = {
 -- Level 4: longer path with dead ends
 
 dead_ends = {
-  "######",
-  "# # *#",
-  "#    #",
-  "## # #",
-  "#    #",
-  "#N## #",
-  "######",
+  " # *",
+  "    ",
+  "# # ",
+  "    ",
+  "N## ",
   progression = celebrate,
   legend = LEGEND_FULL,
   background = bg2
@@ -74,61 +66,51 @@ dead_ends = {
 
 
 maze5 = {
-  "#########",
-  "#   #   #",
-  "# # # # #",
-  "# #   # #",
-  "# ### # #",
-  "#N    #*#",
-  "#########",
+  "   #   ",
+  " # # # ",
+  " #   # ",
+  " ### # ",
+  "N    #*",
   legend = LEGEND_FULL,
   background = bg3
 }
 
 maze6 = {
-  "#########",
-  "#E      #",
-  "### ### #",
-  "#   #   #",
-  "# ### ###",
-  "#     * #",
-  "#########",
+  "E      ",
+  "## ### ",
+  "   #   ",
+  " ### ##",
+  "     * ",
   legend = LEGEND_FULL,
   background = bg5
 }
 
 maze7 = {
-  "##########",
-  "#   #    #",
-  "# # # ## #",
-  "# #   #W #",
-  "# ########",
-  "#       *#",
-  "##########",
+  "   #    ",
+  " # # ## ",
+  " #   #W ",
+  " #######",
+  "       *",
   legend = LEGEND_FULL,
   background = bg3
 }
 
 maze8 = {
-  "##########",
-  "#E   #   #",
-  "# ## ### #",
-  "#        #",
-  "#### # ###",
-  "#    # * #",
-  "##########",
+  "E   #   ",
+  " ## ### ",
+  "        ",
+  "### # ##",
+  "    # * ",
   legend = LEGEND_FULL,
   background = bg2
 }
 
 maze9 = {
-  "###########",
-  "#   #     #",
-  "# # # ### #",
-  "# #   #*  #",
-  "# ### ### #",
-  "#N  #     #",
-  "###########",
+  "   #     ",
+  " # # ### ",
+  " #   #*  ",
+  " ### ### ",
+  "N  #     ",
   grid = false,
   controls = editor,
   legend = LEGEND_FULL,
@@ -136,78 +118,66 @@ maze9 = {
 }
 
 maze10 = {
-  "############",
-  "#   #      #",
-  "# # # #### #",
-  "# #   #    #",
-  "# ##### ####",
-  "#E    #   *#",
-  "############",
+  "   #      ",
+  " # # #### ",
+  " #   #    ",
+  " ##### ###",
+  "E    #   *",
   legend = LEGEND_FULL,
   background = bg4
 }
 
 maze11 = {
-  "################",
-  "#       #      #",
-  "# ##### # #### #",
-  "#     # #    # #",
-  "##### # #### # #",
-  "#E    #      #*#",
-  "################",
+  "       #      ",
+  " ##### # #### ",
+  "     # #    # ",
+  "#### # #### # ",
+  "E    #      #*",
   legend = LEGEND_FULL,
   background = bg1
 }
 
 maze12 = {
-  "###############",
-  "#      #      #",
-  "# #### # #### #",
-  "#    # #    # #",
-  "#### # #### # #",
-  "#E B        #*#",
-  "###############",
+  "      #      ",
+  " #### # #### ",
+  "    # #    # ",
+  "### # #### # ",
+  "E B        #*",
   legend = LEGEND_FULL,
   background = bg3
 }
 
 maze13 = {
-  "########",
-  "###G####",
-  "### ####",
-  "###B BG#",
-  "#G BN###",
-  "####B###",
-  "####G###",
-  "########",
+  "##G###",
+  "## ###",
+  "##B BG",
+  "G BN##",
+  "###B##",
+  "###G##",
   legend = LEGEND_FULL,
   progression = celebrate,
   background = bg2
 }
 
 maze14 = {
-  "#########",
-  "#E  #####",
-  "# BB#####",
-  "# B ###G#",
-  "### ###G#",
-  "###    G#",
-  "##   #  #",
-  "##   ####",
-  "#########",
+  "E  ####",
+  " BB####",
+  " B ###G",
+  "## ###G",
+  "##    G",
+  "#   #  ",
+  "#   ###",
   legend = LEGEND_FULL,
   progression = celebrate,
   background = bg4
 }
 
 maze15 = {
-  "##########",
-  "##     ###",
-  "##B###   #",
-  "# N B  B #",
-  "# GG# B ##",
-  "##GG#   ##",
-  "##########",
+  "#     ##",
+  "#B###   ",
+  " N B  B ",
+  " GG# B #",
+  "#GG#   #",
   legend = LEGEND_FULL,
   background = bg1
 }
@@ -231,19 +201,17 @@ sandbox = {
   maze15
 }
 
--- Lesson-tailored tracks. Spec-compliant: <= 8x8, one
--- control mode each, no wrong-mode drops.
+-- Lesson-tailored tracks. Spec-compliant: playable area
+-- <= 6x6, one control mode each, no wrong-mode drops.
 
 -- Track 1: drive the robot (direct control).
 
 -- D1: a straight run up.
 direct1 = {
-  "###",
-  "#*#",
-  "# #",
-  "# #",
-  "#N#",
-  "###",
+  "*",
+  " ",
+  " ",
+  "N",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -252,12 +220,10 @@ direct1 = {
 
 -- D2: one turn (up, then right).
 direct2 = {
-  "#####",
-  "#  *#",
-  "# ###",
-  "# ###",
-  "#N###",
-  "#####",
+  "  *",
+  " ##",
+  " ##",
+  "N##",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -266,13 +232,11 @@ direct2 = {
 
 -- D3: two turns (a short staircase).
 direct3 = {
-  "######",
-  "###*##",
-  "### ##",
-  "#   ##",
-  "# ####",
-  "#N####",
-  "######",
+  "##*#",
+  "## #",
+  "   #",
+  " ###",
+  "N###",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -281,13 +245,11 @@ direct3 = {
 
 -- D4: seven moves and three turns.
 direct4 = {
-  "######",
-  "### *#",
-  "### ##",
-  "#   ##",
-  "# ####",
-  "#N####",
-  "######",
+  "## *",
+  "## #",
+  "   #",
+  " ###",
+  "N###",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -296,13 +258,11 @@ direct4 = {
 
 -- D5: 8 moves and three turns.
 direct5 = {
-  "########",
-  "###  *##",
-  "### ####",
-  "#   ####",
-  "# ######",
-  "#N######",
-  "########",
+  "##  *#",
+  "## ###",
+  "   ###",
+  " #####",
+  "N#####",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -311,12 +271,10 @@ direct5 = {
 
 -- D6: a U-turn — nine moves there and back.
 direct6 = {
-  "######",
-  "#    #",
-  "# ## #",
-  "# ## #",
-  "#N##*#",
-  "######",
+  "    ",
+  " ## ",
+  " ## ",
+  "N##*",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -325,14 +283,12 @@ direct6 = {
 
 -- D7: a 9-move hook with three turns.
 direct7 = {
-  "########",
-  "#### *##",
-  "#    ###",
-  "# ######",
-  "# ######",
-  "# ######",
-  "#N######",
-  "########",
+  "### *#",
+  "    ##",
+  " #####",
+  " #####",
+  " #####",
+  "N#####",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -341,14 +297,12 @@ direct7 = {
 
 -- D8: 9 moves and four turns.
 direct8 = {
-  "########",
-  "#####*##",
-  "####  ##",
-  "#### ###",
-  "#    ###",
-  "# ######",
-  "#N######",
-  "########",
+  "####*#",
+  "###  #",
+  "### ##",
+  "    ##",
+  " #####",
+  "N#####",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -357,14 +311,12 @@ direct8 = {
 
 -- D9: 10 moves and the first shallow dead end.
 direct9 = {
-  "########",
-  "##*#####",
-  "## #####",
-  "##   ###",
-  "#### ###",
-  "#    ###",
-  "#N# ####",
-  "########",
+  "#*####",
+  "# ####",
+  "#   ##",
+  "### ##",
+  "    ##",
+  "N# ###",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -373,14 +325,12 @@ direct9 = {
 
 -- D10: 10 moves with two wrong choices.
 direct10 = {
-  "########",
-  "####*###",
-  "#### ###",
-  "#    ###",
-  "## ## ##",
-  "##    ##",
-  "#####N##",
-  "########",
+  "###*##",
+  "### ##",
+  "    ##",
+  "# ## #",
+  "#    #",
+  "####N#",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -389,13 +339,11 @@ direct10 = {
 
 -- D11: 11 moves through a branching route.
 direct11 = {
-  "########",
-  "##*#####",
-  "#  #####",
-  "# #N   #",
-  "# ## ###",
-  "#      #",
-  "########",
+  "#*####",
+  "  ####",
+  " #N   ",
+  " ## ##",
+  "      ",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -404,14 +352,12 @@ direct11 = {
 
 -- D12: 12 moves with two dead ends.
 direct12 = {
-  "########",
-  "##     #",
-  "#  # # #",
-  "# ## # #",
-  "# *###N#",
-  "# ######",
-  "#  #####",
-  "########",
+  "#     ",
+  "  # # ",
+  " ## # ",
+  " *###N",
+  " #####",
+  "  ####",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -420,14 +366,12 @@ direct12 = {
 
 -- D13: 12 moves, six turns, three decisions.
 direct13 = {
-  "########",
-  "#   #* #",
-  "# ## # #",
-  "#      #",
-  "## ## ##",
-  "##  ####",
-  "### N###",
-  "########",
+  "   #* ",
+  " ## # ",
+  "      ",
+  "# ## #",
+  "#  ###",
+  "## N##",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -436,14 +380,12 @@ direct13 = {
 
 -- D14: 13 moves and three dead ends.
 direct14 = {
-  "########",
-  "#    ###",
-  "# ##   #",
-  "# #  # #",
-  "#  # *##",
-  "## N####",
-  "## #####",
-  "########",
+  "    ##",
+  " ##   ",
+  " #  # ",
+  "  # *#",
+  "# N###",
+  "# ####",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -452,14 +394,12 @@ direct14 = {
 
 -- D15: 14 moves and seven turns.
 direct15 = {
-  "########",
-  "# ###*##",
-  "# ##   #",
-  "# ## # #",
-  "# N# # #",
-  "# # #  #",
-  "#     ##",
-  "########",
+  " ###*#",
+  " ##   ",
+  " ## # ",
+  " N# # ",
+  " # #  ",
+  "     #",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -468,14 +408,12 @@ direct15 = {
 
 -- D16: a 15-move route with three decoys.
 direct16 = {
-  "#######",
-  "#    *#",
-  "# # ###",
-  "#  ####",
-  "##  #N#",
-  "#  #  #",
-  "##   ##",
-  "#######",
+  "    *",
+  " # ##",
+  "  ###",
+  "#  #N",
+  "  #  ",
+  "#   #",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -484,14 +422,12 @@ direct16 = {
 
 -- D17: 16 moves and eight turns.
 direct17 = {
-  "########",
-  "#   #  #",
-  "# #   ##",
-  "#  ## *#",
-  "# ### ##",
-  "#   ####",
-  "###  N##",
-  "########",
+  "   #  ",
+  " #   #",
+  "  ## *",
+  " ### #",
+  "   ###",
+  "##  N#",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -500,14 +436,12 @@ direct17 = {
 
 -- D18: a 17-move weave with three decoys.
 direct18 = {
-  "########",
-  "##   ###",
-  "#  #  ##",
-  "# ##*###",
-  "# # ##N#",
-  "#    # #",
-  "# ##   #",
-  "########",
+  "#   ##",
+  "  #  #",
+  " ##*##",
+  " # ##N",
+  "    # ",
+  " ##   ",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -516,14 +450,12 @@ direct18 = {
 
 -- D19: 18 moves and nine turns.
 direct19 = {
-  "########",
-  "#     ##",
-  "### #  #",
-  "#   ## #",
-  "## #   #",
-  "#  ### #",
-  "#*#N   #",
-  "########",
+  "     #",
+  "## #  ",
+  "   ## ",
+  "# #   ",
+  "  ### ",
+  "*#N   ",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -532,14 +464,12 @@ direct19 = {
 
 -- D20: 19 moves, ten turns, and three decoys.
 direct20 = {
-  "########",
-  "#  #*  #",
-  "# # ## #",
-  "#   #  #",
-  "# # N# #",
-  "#  ##  #",
-  "##    ##",
-  "########",
+  "  #*  ",
+  " # ## ",
+  "   #  ",
+  " # N# ",
+  "  ##  ",
+  "#    #",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -576,11 +506,9 @@ direct_levels = {
 
 -- P1: a straight run of two, to learn type-then-run.
 plan1 = {
-  "###",
-  "#*#",
-  "# #",
-  "#N#",
-  "###",
+  "*",
+  " ",
+  "N",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -590,14 +518,12 @@ plan1 = {
 
 -- P2: a longer vertical run (count the squares).
 plan2 = {
-  "###",
-  "#*#",
-  "# #",
-  "# #",
-  "# #",
-  "# #",
-  "#N#",
-  "###",
+  "*",
+  " ",
+  " ",
+  " ",
+  " ",
+  "N",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -606,9 +532,7 @@ plan2 = {
 
 -- P3: a horizontal run — same idea, new direction.
 plan3 = {
-  "########",
-  "#E    *#",
-  "########",
+  "E    *",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -617,12 +541,10 @@ plan3 = {
 
 -- P4: one turn (up, then right).
 plan4 = {
-  "#####",
-  "#  *#",
-  "# ###",
-  "# ###",
-  "#N###",
-  "#####",
+  "  *",
+  " ##",
+  " ##",
+  "N##",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -631,11 +553,9 @@ plan4 = {
 
 -- P5: one turn the other way (across, then up).
 plan5 = {
-  "#######",
-  "#####*#",
-  "##### #",
-  "#E    #",
-  "#######",
+  "####*",
+  "#### ",
+  "E    ",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -644,13 +564,11 @@ plan5 = {
 
 -- P6: a longer L (four up, three across).
 plan6 = {
-  "######",
-  "#   *#",
-  "# ####",
-  "# ####",
-  "# ####",
-  "#N####",
-  "######",
+  "   *",
+  " ###",
+  " ###",
+  " ###",
+  "N###",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -659,14 +577,12 @@ plan6 = {
 
 -- P7: two turns (a staircase).
 plan7 = {
-  "######",
-  "###*##",
-  "### ##",
-  "#   ##",
-  "# ####",
-  "# ####",
-  "#N####",
-  "######",
+  "##*#",
+  "## #",
+  "   #",
+  " ###",
+  " ###",
+  "N###",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -675,13 +591,11 @@ plan7 = {
 
 -- P8: three turns, ending west.
 plan8 = {
-  "#######",
-  "#*  ###",
-  "### ###",
-  "#   ###",
-  "# #####",
-  "#N#####",
-  "#######",
+  "*  ##",
+  "## ##",
+  "   ##",
+  " ####",
+  "N####",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -690,11 +604,9 @@ plan8 = {
 
 -- P9: nine moves over and down.
 plan9 = {
-  "########",
-  "#    ###",
-  "# ## ###",
-  "#N##  *#",
-  "########",
+  "    ##",
+  " ## ##",
+  "N##  *",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -703,11 +615,9 @@ plan9 = {
 
 -- P10: a long U — twelve moves, only two turns.
 plan10 = {
-  "########",
-  "#E     #",
-  "###### #",
-  "#*     #",
-  "########",
+  "E     ",
+  "##### ",
+  "*     ",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -717,13 +627,11 @@ plan10 = {
 -- P11: the first choice — a ring with a short way and a
 -- long way. Both reach the goal.
 plan11 = {
-  "#######",
-  "#     #",
-  "# ### #",
-  "# #*  #",
-  "# ### #",
-  "#E    #",
-  "#######",
+  "     ",
+  " ### ",
+  " #*  ",
+  " ### ",
+  "E    ",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -732,13 +640,11 @@ plan11 = {
 
 -- P12: one wrong branch that goes nowhere.
 plan12 = {
-  "#######",
-  "#*    #",
-  "##### #",
-  "#   # #",
-  "### # #",
-  "###E  #",
-  "#######",
+  "*    ",
+  "#### ",
+  "   # ",
+  "## # ",
+  "##E  ",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -747,14 +653,12 @@ plan12 = {
 
 -- P13: eleven moves with a fork and a dead end.
 plan13 = {
-  "########",
-  "#*   ###",
-  "#### ###",
-  "#  # ###",
-  "## #   #",
-  "##   # #",
-  "#####E #",
-  "########",
+  "*   ##",
+  "### ##",
+  "  # ##",
+  "# #   ",
+  "#   # ",
+  "####E ",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -763,14 +667,12 @@ plan13 = {
 
 -- P14: twelve moves, two forks, two dead ends.
 plan14 = {
-  "########",
-  "#  #   #",
-  "# ## # #",
-  "#    #*#",
-  "# ## ###",
-  "# ##   #",
-  "#N######",
-  "########",
+  "  #   ",
+  " ## # ",
+  "    #*",
+  " ## ##",
+  " ##   ",
+  "N#####",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -779,12 +681,10 @@ plan14 = {
 
 -- P15: a twelve-move weave with five turns.
 plan15 = {
-  "########",
-  "#   # *#",
-  "# # # ##",
-  "# #   ##",
-  "#N######",
-  "########",
+  "   # *",
+  " # # #",
+  " #   #",
+  "N#####",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -793,14 +693,12 @@ plan15 = {
 
 -- P16: thirteen moves through branching rooms.
 plan16 = {
-  "########",
-  "##     #",
-  "## ### #",
-  "#   #* #",
-  "# # ## #",
-  "# #    #",
-  "#N###  #",
-  "########",
+  "#     ",
+  "# ### ",
+  "   #* ",
+  " # ## ",
+  " #    ",
+  "N###  ",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -809,13 +707,11 @@ plan16 = {
 
 -- P17: a long hook with a six-cell decoy corridor.
 plan17 = {
-  "########",
-  "#     W#",
-  "# ### ##",
-  "# #*# ##",
-  "# # # ##",
-  "#   #  #",
-  "########",
+  "     W",
+  " ### #",
+  " #*# #",
+  " # # #",
+  "   #  ",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -824,14 +720,12 @@ plan17 = {
 
 -- P18: fourteen moves around two blocks.
 plan18 = {
-  "########",
-  "#E     #",
-  "###### #",
-  "#    # #",
-  "# ## # #",
-  "# #* # #",
-  "# #    #",
-  "########",
+  "E     ",
+  "##### ",
+  "    # ",
+  " ## # ",
+  " #* # ",
+  " #    ",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -840,13 +734,11 @@ plan18 = {
 
 -- P19: fifteen moves, a fork and a dead end on the way.
 plan19 = {
-  "########",
-  "#   # *#",
-  "# # # ##",
-  "# # #  #",
-  "# #   ##",
-  "#N######",
-  "########",
+  "   # *",
+  " # # #",
+  " # #  ",
+  " #   #",
+  "N#####",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -855,13 +747,11 @@ plan19 = {
 
 -- P20: the spiral — sixteen moves to the center.
 plan20 = {
-  "#######",
-  "#E    #",
-  "##### #",
-  "#   # #",
-  "# # # #",
-  "#*#   #",
-  "#######",
+  "E    ",
+  "#### ",
+  "   # ",
+  " # # ",
+  "*#   ",
   controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,

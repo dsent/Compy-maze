@@ -122,13 +122,34 @@ end
 
 -- Init
 
--- Plan levels raise the maze by one tile row so the
--- overlay strip never covers playable cells.
+-- Every level fits the playable grid plus bump headroom.
+-- Plan levels box the field in with FIELD_MARGIN: it
+-- clears the screen edges, the dock strip below and the
+-- compass column on the right. Editor levels clear the
+-- runtime console (status line + input line) instead.
+
+function plan_grid_opts(o)
+  local w = gfx.getWidth()
+  o.margin = FIELD_MARGIN
+  o.pad_right = (w - legend_left(hud_font))
+      + FIELD_MARGIN
+  o.pad_bottom = plan_zone_h()
+  return o
+end
+
+function editor_pad_bottom()
+  return 2 * hud_font:getHeight() + FIELD_MARGIN
+end
 
 function grid_opts()
+  local o = { bump_pad = true }
   if cur_controls == plan then
-    return { pad_bottom = plan_pad_bottom() }
+    return plan_grid_opts(o)
   end
+  if cur_controls == editor then
+    o.pad_bottom = editor_pad_bottom()
+  end
+  return o
 end
 
 function reset_level()

@@ -18,17 +18,30 @@ function init_cell_metrics()
   GRID.push_path = GRID.bump_dist + GRID.cell + GRID.bump_dist
 end
 
+-- opts.bump_pad reserves bump-animation headroom around
+-- the grid: a crash bump overshoots the edge cell by
+-- (1 - cell_fill) / 2 of a cell on each side.
+
+function grid_pad(o)
+  if o.bump_pad then
+    return 1 - PLAYER.cell_fill
+  end
+  return 0
+end
+
 function init_grid(rows, cols, opts)
   GRID.rows = rows
   GRID.cols = cols
   local o = opts or {}
+  local pad = grid_pad(o)
   local m = o.margin or 0
   local w, h = gfx.getDimensions()
   local avail_w = w - m - (o.pad_right or 0)
   local avail_h = h - 2 * m - (o.pad_bottom or 0)
-  GRID.cell = math.min(avail_w / cols, avail_h / rows)
-  local slack = (avail_w - GRID.cell * cols) / 2
-  GRID.offset_x = m + slack
+  GRID.cell = math.min(
+    avail_w / (cols + pad), avail_h / (rows + pad)
+  )
+  GRID.offset_x = m + (avail_w - GRID.cell * cols) / 2
   GRID.offset_y = m + (avail_h - GRID.cell * rows) / 2
   init_cell_metrics()
 end

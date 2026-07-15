@@ -22,6 +22,12 @@ require("menu")
 
 sfx = compy.audio
 
+-- The Compy runtime font, captured before any drawing
+-- swaps fonts in; layout math that runs outside the draw
+-- pass (grid_opts) measures with it.
+
+hud_font = gfx.getFont()
+
 -- Echo of entered commands (one line per Enter).
 
 echo_lines = { }

@@ -187,16 +187,28 @@ end
 -- Controls legend in the bottom-right corner. Shared by
 -- maze and draw; each sets cur_legend to its own hint.
 
+-- Left edge of the legend block; the column it starts is
+-- reserved for HUD text. Callers outside the draw pass
+-- supply the HUD font explicitly.
+
+function legend_left(font)
+  local w = gfx.getWidth()
+  if not cur_legend then
+    return w
+  end
+  local fw = font:getWidth(cur_legend)
+  return (w - fw) - font:getHeight()
+end
+
 function draw_legend()
   if not cur_legend then
     return
   end
-  local w, h = gfx.getDimensions()
+  local h = gfx.getHeight()
   local font = gfx.getFont()
   local fh = font:getHeight()
-  local fw = font:getWidth(cur_legend)
   local _, n = cur_legend:gsub("\n", "")
   local th = fh * (n + 1)
   gfx.setColor(Color[Color.black])
-  gfx.print(cur_legend, (w - fw) - fh, (h - th) - fh)
+  gfx.print(cur_legend, legend_left(font), (h - th) - fh)
 end

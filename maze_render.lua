@@ -269,13 +269,11 @@ function draw_boxes()
   end
 end
 
--- Plan-a-path strip: the typed plan as key tiles overlaid
--- on the maze above a faint backdrop, with the run prompt
--- floating over the field. Tiles use the keyboard game's
--- draw_key so they match the real Compy keycaps, ten per
--- row across two rows anchored at the bottom edge — over
--- the boundary wall row, so short plans never cover
--- playable cells.
+-- Plan-a-path strip: the typed plan as key tiles above a
+-- faint backdrop, below the boxed-in field. Tiles use
+-- the keyboard game's draw_key so they match the real
+-- Compy keycaps, ten per row across two rows anchored at
+-- the bottom edge.
 
 function plan_strip_x()
   local w = gfx.getWidth()
@@ -359,46 +357,72 @@ function draw_plan_backdrop()
   gfx.rectangle("fill", 0, top, w, h - top)
 end
 
--- The prompt sits top-center over the boundary wall row
--- (mirroring the level indicator), with a soft shadow, so
--- it never collides with maze content or the strip. It
--- shows whenever input is open; it hides during a run and
--- the win pause.
+-- The prompt sits in the compass column above the corner
+-- HUD, wrapped to the column and centered, so a long
+-- translation stacks into extra lines instead of leaking
+-- over the field. It shows whenever input is open; it
+-- hides during a run and the win pause.
+
+function prompt_column()
+  local font = gfx.getFont()
+  local x = legend_left(font)
+  local lim = gfx.getWidth() - x - font:getHeight()
+  return x, lim
+end
+
+function prompt_top(font, lim)
+  local _, lines = font:getWrap(PLAN_PROMPT, lim)
+  local th = #lines * font:getHeight()
+  return (hud_corner_top() - th) - font:getHeight() / 2
+end
 
 function draw_plan_prompt()
   if plan_locked() then
     return
   end
   local font = gfx.getFont()
-  local w = gfx.getWidth()
-  local x = (w - font:getWidth(PLAN_PROMPT)) / 2
-  local y = font:getHeight() / 2
+  local x, lim = prompt_column()
+  local y = prompt_top(font, lim)
   gfx.setColor(0, 0, 0, 0.6)
-  gfx.print(PLAN_PROMPT, x + 1, y + 1)
+  gfx.printf(PLAN_PROMPT, x + 1, y + 1, lim, "center")
   gfx.setColor(1, 1, 1, 0.8)
-  gfx.print(PLAN_PROMPT, x, y)
+  gfx.printf(PLAN_PROMPT, x, y, lim, "center")
 end
+
+-- draw_key leaves the keycap font active; restore the
+-- HUD font once the tiles are done.
 
 function draw_plan_strip()
   if cur_controls ~= plan then
     return
   end
+  local font = gfx.getFont()
   draw_plan_backdrop()
   draw_plan_prompt()
   for i = 1, #(GS.plan.buf) do
     draw_plan_tile(i)
   end
+  gfx.setFont(font)
 end
 
 -- On plan levels the bottom-corner HUD (legend and macro
--- list) lifts above the strip zone and its prompt line.
+-- list) lifts above the strip zone.
 
 function hud_lift()
   if cur_controls == plan then
-    local fh = gfx.getFont():getHeight()
-    return plan_zone_h() + fh + 2 * SCALE
+    return plan_zone_h() + 2 * SCALE
   end
   return 0
+end
+
+-- Top of the lifted corner HUD block (macros + legend),
+-- as drawn by draw_hud_corner.
+
+function hud_corner_top()
+  local fh = gfx.getFont():getHeight()
+  local lines = 1 + legend_lines()
+      + #macro_lines(macro_letters())
+  return gfx.getHeight() - fh * lines - hud_lift()
 end
 
 function draw_hud_corner()
