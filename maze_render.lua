@@ -269,46 +269,48 @@ function draw_boxes()
   end
 end
 
--- Plan-a-path strip: the typed plan as key tiles over a
--- dim backdrop, with the run prompt above. Tiles use the
--- keyboard game's draw_key so they match the real Compy
--- keycaps, ten per row across two rows.
+-- Plan-a-path strip: the typed plan as key tiles overlaid
+-- on the maze above a faint backdrop, with the run prompt
+-- floating over the field. Tiles use the keyboard game's
+-- draw_key so they match the real Compy keycaps, ten per
+-- row across two rows anchored at the bottom edge — over
+-- the boundary wall row, so short plans never cover
+-- playable cells.
 
 function plan_strip_x()
   local w = gfx.getWidth()
   local row = PLAN_ROW_LEN * plan_tile_w()
-  local gaps = (PLAN_ROW_LEN - 1) * SCALE
+  local gaps = (PLAN_ROW_LEN - 1) * plan_gap()
   return (w - (row + gaps)) / 2
 end
 
-function plan_band_top()
-  return gfx.getHeight() - plan_band_h()
-end
-
-function plan_rows_top()
-  local fh = gfx.getFont():getHeight()
-  return plan_band_top() + fh + 2 * plan_pad()
+function plan_zone_top()
+  return gfx.getHeight() - plan_zone_h()
 end
 
 function plan_tile_pos(i)
   local col = (i - 1) % PLAN_ROW_LEN
   local row = math.floor((i - 1) / PLAN_ROW_LEN)
+  local g = plan_gap()
   local x = plan_strip_x()
-      + col * (plan_tile_w() + SCALE)
-  local y = plan_rows_top()
-      + row * (plan_tile_h() + SCALE)
+      + col * (plan_tile_w() + g)
+  local y = plan_zone_top() + g
+      + row * (plan_tile_h() + g)
   return x, y
 end
 
 -- Tile background by state: executed green, executing
--- bright green, crash bright red; pending stays a plain
--- keycap (nil = draw_key base color).
+-- bright green, crash bright red, pending a plain keycap.
+-- Slightly translucent so the field shows through the
+-- overlay; the crash tile stays near-opaque for salience.
 
 function plan_crash_bg(i, at)
   if i < at then
-    return Color[Color.green]
+    return Color.with_alpha(Color[Color.green], 0.85)
   elseif i == at then
-    return Color[Color.red + Color.bright]
+    return Color.with_alpha(
+      Color[Color.red + Color.bright], 0.95
+    )
   end
 end
 
@@ -319,12 +321,15 @@ function plan_tile_bg(i)
   end
   local won = GS.won or GS.celebrating
   if won or i <= p.done then
-    return Color[Color.green]
+    return Color.with_alpha(Color[Color.green], 0.85)
   end
   local exec = GS.running and i == p.exec
   if exec then
-    return Color[Color.green + Color.bright]
+    return Color.with_alpha(
+      Color[Color.green + Color.bright], 0.9
+    )
   end
+  return Color.with_alpha(Color[Color.black], 0.85)
 end
 
 -- Tiles after the crash never ran; dim them.
@@ -349,13 +354,16 @@ end
 
 function draw_plan_backdrop()
   local w, h = gfx.getDimensions()
-  local top = plan_band_top()
-  gfx.setColor(0, 0, 0, 0.35)
+  local top = plan_zone_top()
+  gfx.setColor(0, 0, 0, 0.22)
   gfx.rectangle("fill", 0, top, w, h - top)
 end
 
--- The prompt shows whenever input is open; it hides
--- during a run and the win pause.
+-- The prompt sits top-center over the boundary wall row
+-- (mirroring the level indicator), with a soft shadow, so
+-- it never collides with maze content or the strip. It
+-- shows whenever input is open; it hides during a run and
+-- the win pause.
 
 function draw_plan_prompt()
   if plan_locked() then
@@ -364,8 +372,10 @@ function draw_plan_prompt()
   local font = gfx.getFont()
   local w = gfx.getWidth()
   local x = (w - font:getWidth(PLAN_PROMPT)) / 2
-  local y = plan_band_top() + plan_pad()
-  gfx.setColor(1, 1, 1, 0.7)
+  local y = font:getHeight() / 2
+  gfx.setColor(0, 0, 0, 0.6)
+  gfx.print(PLAN_PROMPT, x + 1, y + 1)
+  gfx.setColor(1, 1, 1, 0.8)
   gfx.print(PLAN_PROMPT, x, y)
 end
 
@@ -381,11 +391,12 @@ function draw_plan_strip()
 end
 
 -- On plan levels the bottom-corner HUD (legend and macro
--- list) lifts above the reserved strip band.
+-- list) lifts above the strip zone and its prompt line.
 
 function hud_lift()
   if cur_controls == plan then
-    return plan_band_h()
+    local fh = gfx.getFont():getHeight()
+    return plan_zone_h() + fh + 2 * SCALE
   end
   return 0
 end

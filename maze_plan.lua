@@ -194,9 +194,11 @@ function plan_after_crash()
   reset_level()
 end
 
--- Reserved bottom band: a prompt line and two tile rows,
--- ten tiles each, at the keyboard game's natural key
--- size.
+-- Overlay strip: two tile rows, ten tiles each, at the
+-- keyboard game's natural key size, anchored to the
+-- bottom edge over the full-screen maze. All metrics
+-- derive from the keycap scale so they are independent
+-- of whatever font is active.
 
 function plan_tile_w()
   return STD_W * SCALE
@@ -206,12 +208,19 @@ function plan_tile_h()
   return STD_H * SCALE
 end
 
-function plan_pad()
-  return gfx.getFont():getHeight() / 2
+function plan_gap()
+  return SCALE
 end
 
-function plan_band_h()
-  local fh = gfx.getFont():getHeight()
-  local rows = 2 * plan_tile_h() + SCALE
-  return fh + rows + 3 * plan_pad()
+function plan_zone_h()
+  return 2 * plan_tile_h() + 3 * plan_gap()
+end
+
+-- The maze shifts up by one tile row on plan levels: the
+-- strip's first row then overlaps only the bottom boundary
+-- wall, and its second row lies below the maze, so no
+-- playable cell is ever covered.
+
+function plan_pad_bottom()
+  return plan_tile_h() + plan_gap()
 end

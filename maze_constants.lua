@@ -51,6 +51,12 @@ MAX_PLAN_LEN = 20
 PLAN_ROW_LEN = 10
 PLAN_PROMPT = "Press Enter to go!"
 
+-- Maze steps run ~20% slower than the shared core
+-- default, tuned for the 4-6 bracket.
+
+ANIM.move_time = 0.56
+ANIM.turn_time = 0.56
+
 -- Celebrate message: prefix + Tab keycap + suffix.
 
 CELEBRATE_PREFIX = "Congratulations! Press "

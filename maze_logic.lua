@@ -122,11 +122,12 @@ end
 
 -- Init
 
--- Plan levels reserve a bottom band for the tile strip.
+-- Plan levels raise the maze by one tile row so the
+-- overlay strip never covers playable cells.
 
 function grid_opts()
   if cur_controls == plan then
-    return { pad_bottom = plan_band_h() }
+    return { pad_bottom = plan_pad_bottom() }
   end
 end
 
