@@ -232,9 +232,7 @@ sandbox = {
 }
 
 -- Lesson-tailored tracks. Spec-compliant: <= 8x8, one
--- control mode each, no wrong-mode drops. Each set is an
--- ordered, distinct progression of walled corridors so
--- the path stays unambiguous for the youngest.
+-- control mode each, no wrong-mode drops.
 
 -- Track 1: drive the robot (direct control).
 
@@ -310,12 +308,265 @@ direct5 = {
   background = bg5
 }
 
+-- D6: 8 moves and three turns.
+direct6 = {
+  "########",
+  "###  *##",
+  "### ####",
+  "#   ####",
+  "# ######",
+  "#N######",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg1
+}
+
+-- D7: a 9-move hook with three turns.
+direct7 = {
+  "########",
+  "#### *##",
+  "#    ###",
+  "# ######",
+  "# ######",
+  "# ######",
+  "#N######",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg2
+}
+
+-- D8: 9 moves and four turns.
+direct8 = {
+  "########",
+  "#####*##",
+  "####  ##",
+  "#### ###",
+  "#    ###",
+  "# ######",
+  "#N######",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg3
+}
+
+-- D9: 10 moves and the first shallow dead end.
+direct9 = {
+  "########",
+  "##*#####",
+  "## #####",
+  "##   ###",
+  "#### ###",
+  "#    ###",
+  "#N# ####",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg4
+}
+
+-- D10: 10 moves with two wrong choices.
+direct10 = {
+  "########",
+  "####*###",
+  "#### ###",
+  "#    ###",
+  "## ## ##",
+  "##    ##",
+  "#####N##",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg5
+}
+
+-- D11: 11 moves through a branching route.
+direct11 = {
+  "########",
+  "##*#####",
+  "#  #####",
+  "# #N   #",
+  "# ## ###",
+  "#      #",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg1
+}
+
+-- D12: 12 moves with two dead ends.
+direct12 = {
+  "########",
+  "##     #",
+  "#  # # #",
+  "# ## # #",
+  "# *###N#",
+  "# ######",
+  "#  #####",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg2
+}
+
+-- D13: 12 moves, six turns, three decisions.
+direct13 = {
+  "########",
+  "#   #* #",
+  "# ## # #",
+  "#      #",
+  "## ## ##",
+  "##  ####",
+  "### N###",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg3
+}
+
+-- D14: 13 moves and three dead ends.
+direct14 = {
+  "########",
+  "#    ###",
+  "# ##   #",
+  "# #  # #",
+  "#  # *##",
+  "## N####",
+  "## #####",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg4
+}
+
+-- D15: 14 moves and seven turns.
+direct15 = {
+  "########",
+  "# ###*##",
+  "# ##   #",
+  "# ## # #",
+  "# N# # #",
+  "# # #  #",
+  "#     ##",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg5
+}
+
+-- D16: a 15-move route with three decoys.
+direct16 = {
+  "#######",
+  "#    *#",
+  "# # ###",
+  "#  ####",
+  "##  #N#",
+  "#  #  #",
+  "##   ##",
+  "#######",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg1
+}
+
+-- D17: 16 moves and eight turns.
+direct17 = {
+  "########",
+  "#   #  #",
+  "# #   ##",
+  "#  ## *#",
+  "# ### ##",
+  "#   ####",
+  "###  N##",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg2
+}
+
+-- D18: a 17-move weave with three decoys.
+direct18 = {
+  "########",
+  "##   ###",
+  "#  #  ##",
+  "# ##*###",
+  "# # ##N#",
+  "#    # #",
+  "# ##   #",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg3
+}
+
+-- D19: 18 moves and nine turns.
+direct19 = {
+  "########",
+  "#     ##",
+  "### #  #",
+  "#   ## #",
+  "## #   #",
+  "#  ### #",
+  "#*#N   #",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg4
+}
+
+-- D20: 19 moves, ten turns, and three decoys.
+direct20 = {
+  "########",
+  "#  #*  #",
+  "# # ## #",
+  "#   #  #",
+  "# # N# #",
+  "#  ##  #",
+  "##    ##",
+  "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg5
+}
+
 direct_levels = {
   direct1,
   direct2,
   direct3,
   direct4,
-  direct5
+  direct5,
+  direct6,
+  direct7,
+  direct8,
+  direct9,
+  direct10,
+  direct11,
+  direct12,
+  direct13,
+  direct14,
+  direct15,
+  direct16,
+  direct17,
+  direct18,
+  direct19,
+  direct20
 }
 
 -- Track 2: plan a path (editor). The long straight runs
