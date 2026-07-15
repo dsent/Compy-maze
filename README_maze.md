@@ -23,7 +23,7 @@ pressing Shift+Esc.
 
 ## Controls
 
-Each level uses one of two control modes.
+Each level uses one of three control modes.
 
 ### Key Mode
 
@@ -71,6 +71,29 @@ names — those are already commands.
 
 While Shift is held, the screen dims to show you are
 in recording mode.
+
+### Plan Mode
+
+Some mazes wait for your whole plan. Press direction
+keys and each one appears as a key picture at the
+bottom of the screen — the robot does not move yet.
+Press Backspace to take back the last key. When your
+plan is ready, press Enter: the robot follows it step
+by step, and each key lights up green as the robot
+does it.
+
+If the plan ends before the goal, add more keys and
+press Enter again — the robot carries on from where
+it stopped. Press Tab to send the robot back to the
+start; your plan stays, and the next Enter runs it
+from the beginning.
+
+If the robot hits a wall, the key that went wrong
+turns red and the keys after it go dark. The robot
+returns to the start, but your plan stays. Fix it
+and press Enter to try again.
+
+A plan holds up to 20 keys.
 
 ### Editor Mode
 
@@ -147,7 +170,9 @@ behind. Moving backward leaves no trail.
 
 If the robot hits a wall, you hear a soft sound and
 it stops. In Key Mode the maze resets so you can try
-again. In Editor Mode a message appears — "Crashed.
+again. In Plan Mode the maze resets too, but your
+plan stays, with the key that went wrong marked red.
+In Editor Mode a message appears — "Crashed.
 Press Tab to try again." — and your program stays on
 screen with the step that went wrong marked red, so
 you can fix it and run it again.

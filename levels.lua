@@ -279,24 +279,10 @@ direct3 = {
   background = bg3
 }
 
--- D4: a U-turn (up, across, back down).
+-- D4: seven moves and three turns.
 direct4 = {
   "######",
-  "#    #",
-  "# ## #",
-  "# ## #",
-  "#N##*#",
-  "######",
-  controls = keys,
-  progression = celebrate,
-  legend = LEGEND_FULL,
-  background = bg4
-}
-
--- D5: a longer winding path.
-direct5 = {
-  "######",
-  "#   *#",
+  "### *#",
   "### ##",
   "#   ##",
   "# ####",
@@ -305,11 +291,11 @@ direct5 = {
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
-  background = bg5
+  background = bg4
 }
 
--- D6: 8 moves and three turns.
-direct6 = {
+-- D5: 8 moves and three turns.
+direct5 = {
   "########",
   "###  *##",
   "### ####",
@@ -317,6 +303,20 @@ direct6 = {
   "# ######",
   "#N######",
   "########",
+  controls = keys,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg5
+}
+
+-- D6: a U-turn — nine moves there and back.
+direct6 = {
+  "######",
+  "#    #",
+  "# ## #",
+  "# ## #",
+  "#N##*#",
+  "######",
   controls = keys,
   progression = celebrate,
   legend = LEGEND_FULL,
@@ -569,23 +569,26 @@ direct_levels = {
   direct20
 }
 
--- Track 2: plan a path (editor). The long straight runs
--- (plan2, plan3, plan5) make the repeat shorthand pay off.
+-- Track 2: plan a path (key-tile buffer). 20 levels graded
+-- like the direct track: straight runs, then turns, then
+-- forks and dead ends, then long winding routes — all
+-- solvable within the 20-tile plan cap.
 
--- P1: a short straight to learn type-then-run.
+-- P1: a straight run of two, to learn type-then-run.
 plan1 = {
-  "#####",
-  "# * #",
-  "#   #",
-  "# N #",
-  "#####",
-  controls = editor,
+  "###",
+  "#*#",
+  "# #",
+  "#N#",
+  "###",
+  controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
+  grid = true,
   background = bg1
 }
 
--- P2: a long vertical run (motivates the shorthand).
+-- P2: a longer vertical run (count the squares).
 plan2 = {
   "###",
   "#*#",
@@ -595,25 +598,52 @@ plan2 = {
   "# #",
   "#N#",
   "###",
-  controls = editor,
+  controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
   background = bg2
 }
 
--- P3: a long horizontal run.
+-- P3: a horizontal run — same idea, new direction.
 plan3 = {
   "########",
-  "#N    *#",
+  "#E    *#",
   "########",
-  controls = editor,
+  controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
   background = bg3
 }
 
--- P4: a long L (up, then across).
+-- P4: one turn (up, then right).
 plan4 = {
+  "#####",
+  "#  *#",
+  "# ###",
+  "# ###",
+  "#N###",
+  "#####",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg4
+}
+
+-- P5: one turn the other way (across, then up).
+plan5 = {
+  "#######",
+  "#####*#",
+  "##### #",
+  "#E    #",
+  "#######",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg5
+}
+
+-- P6: a longer L (four up, three across).
+plan6 = {
   "######",
   "#   *#",
   "# ####",
@@ -621,20 +651,218 @@ plan4 = {
   "# ####",
   "#N####",
   "######",
-  controls = editor,
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg1
+}
+
+-- P7: two turns (a staircase).
+plan7 = {
+  "######",
+  "###*##",
+  "### ##",
+  "#   ##",
+  "# ####",
+  "# ####",
+  "#N####",
+  "######",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg2
+}
+
+-- P8: three turns, ending west.
+plan8 = {
+  "#######",
+  "#*  ###",
+  "### ###",
+  "#   ###",
+  "# #####",
+  "#N#####",
+  "#######",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg3
+}
+
+-- P9: nine moves over and down.
+plan9 = {
+  "########",
+  "#    ###",
+  "# ## ###",
+  "#N##  *#",
+  "########",
+  controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
   background = bg4
 }
 
--- P5: a long U (across, down, back across).
-plan5 = {
+-- P10: a long U — twelve moves, only two turns.
+plan10 = {
   "########",
-  "#N     #",
+  "#E     #",
   "###### #",
   "#*     #",
   "########",
-  controls = editor,
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg5
+}
+
+-- P11: the first choice — a ring with a short way and a
+-- long way. Both reach the goal.
+plan11 = {
+  "#######",
+  "#     #",
+  "# ### #",
+  "# #*  #",
+  "# ### #",
+  "#E    #",
+  "#######",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg1
+}
+
+-- P12: one wrong branch that goes nowhere.
+plan12 = {
+  "#######",
+  "#*    #",
+  "##### #",
+  "#   # #",
+  "### # #",
+  "###E  #",
+  "#######",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg2
+}
+
+-- P13: eleven moves with a fork and a dead end.
+plan13 = {
+  "########",
+  "#*   ###",
+  "#### ###",
+  "#  # ###",
+  "## #   #",
+  "##   # #",
+  "#####E #",
+  "########",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg3
+}
+
+-- P14: twelve moves, two forks, two dead ends.
+plan14 = {
+  "########",
+  "#  #   #",
+  "# ## # #",
+  "#    #*#",
+  "# ## ###",
+  "# ##   #",
+  "#N######",
+  "########",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg4
+}
+
+-- P15: a twelve-move weave with five turns.
+plan15 = {
+  "########",
+  "#   # *#",
+  "# # # ##",
+  "# #   ##",
+  "#N######",
+  "########",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg5
+}
+
+-- P16: thirteen moves through branching rooms.
+plan16 = {
+  "########",
+  "##     #",
+  "## ### #",
+  "#   #* #",
+  "# # ## #",
+  "# #    #",
+  "#N###  #",
+  "########",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg1
+}
+
+-- P17: a long hook with a six-cell decoy corridor.
+plan17 = {
+  "########",
+  "#     W#",
+  "# ### ##",
+  "# #*# ##",
+  "# # # ##",
+  "#   #  #",
+  "########",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg2
+}
+
+-- P18: fourteen moves around two blocks.
+plan18 = {
+  "########",
+  "#E     #",
+  "###### #",
+  "#    # #",
+  "# ## # #",
+  "# #* # #",
+  "# #    #",
+  "########",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg3
+}
+
+-- P19: fifteen moves, a fork and a dead end on the way.
+plan19 = {
+  "########",
+  "#   # *#",
+  "# # # ##",
+  "# # #  #",
+  "# #   ##",
+  "#N######",
+  "########",
+  controls = plan,
+  progression = celebrate,
+  legend = LEGEND_FULL,
+  background = bg4
+}
+
+-- P20: the spiral — sixteen moves to the center.
+plan20 = {
+  "#######",
+  "#E    #",
+  "##### #",
+  "#   # #",
+  "# # # #",
+  "#*#   #",
+  "#######",
+  controls = plan,
   progression = celebrate,
   legend = LEGEND_FULL,
   background = bg5
@@ -645,7 +873,22 @@ plan_levels = {
   plan2,
   plan3,
   plan4,
-  plan5
+  plan5,
+  plan6,
+  plan7,
+  plan8,
+  plan9,
+  plan10,
+  plan11,
+  plan12,
+  plan13,
+  plan14,
+  plan15,
+  plan16,
+  plan17,
+  plan18,
+  plan19,
+  plan20
 }
 
 TRACKS = {

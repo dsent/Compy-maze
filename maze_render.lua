@@ -269,6 +269,135 @@ function draw_boxes()
   end
 end
 
+-- Plan-a-path strip: the typed plan as key tiles over a
+-- dim backdrop, with the run prompt above. Tiles use the
+-- keyboard game's draw_key so they match the real Compy
+-- keycaps, ten per row across two rows.
+
+function plan_strip_x()
+  local w = gfx.getWidth()
+  local row = PLAN_ROW_LEN * plan_tile_w()
+  local gaps = (PLAN_ROW_LEN - 1) * SCALE
+  return (w - (row + gaps)) / 2
+end
+
+function plan_band_top()
+  return gfx.getHeight() - plan_band_h()
+end
+
+function plan_rows_top()
+  local fh = gfx.getFont():getHeight()
+  return plan_band_top() + fh + 2 * plan_pad()
+end
+
+function plan_tile_pos(i)
+  local col = (i - 1) % PLAN_ROW_LEN
+  local row = math.floor((i - 1) / PLAN_ROW_LEN)
+  local x = plan_strip_x()
+      + col * (plan_tile_w() + SCALE)
+  local y = plan_rows_top()
+      + row * (plan_tile_h() + SCALE)
+  return x, y
+end
+
+-- Tile background by state: executed green, executing
+-- bright green, crash bright red; pending stays a plain
+-- keycap (nil = draw_key base color).
+
+function plan_crash_bg(i, at)
+  if i < at then
+    return Color[Color.green]
+  elseif i == at then
+    return Color[Color.red + Color.bright]
+  end
+end
+
+function plan_tile_bg(i)
+  local p = GS.plan
+  if p.crash_at then
+    return plan_crash_bg(i, p.crash_at)
+  end
+  local won = GS.won or GS.celebrating
+  if won or i <= p.done then
+    return Color[Color.green]
+  end
+  local exec = GS.running and i == p.exec
+  if exec then
+    return Color[Color.green + Color.bright]
+  end
+end
+
+-- Tiles after the crash never ran; dim them.
+
+function plan_tile_dim(i)
+  local at = GS.plan.crash_at
+  return at and at < i
+end
+
+function draw_plan_tile(i)
+  local x, y = plan_tile_pos(i)
+  local name = GS.plan.buf[i]:lower()
+  key_bg[name] = plan_tile_bg(i)
+  draw_key(x, y, name)
+  key_bg[name] = nil
+  if plan_tile_dim(i) then
+    gfx.setColor(0, 0, 0, 0.6)
+    local tw, th = plan_tile_w(), plan_tile_h()
+    gfx.rectangle("fill", x, y, tw, th)
+  end
+end
+
+function draw_plan_backdrop()
+  local w, h = gfx.getDimensions()
+  local top = plan_band_top()
+  gfx.setColor(0, 0, 0, 0.35)
+  gfx.rectangle("fill", 0, top, w, h - top)
+end
+
+-- The prompt shows whenever input is open; it hides
+-- during a run and the win pause.
+
+function draw_plan_prompt()
+  if plan_locked() then
+    return
+  end
+  local font = gfx.getFont()
+  local w = gfx.getWidth()
+  local x = (w - font:getWidth(PLAN_PROMPT)) / 2
+  local y = plan_band_top() + plan_pad()
+  gfx.setColor(1, 1, 1, 0.7)
+  gfx.print(PLAN_PROMPT, x, y)
+end
+
+function draw_plan_strip()
+  if cur_controls ~= plan then
+    return
+  end
+  draw_plan_backdrop()
+  draw_plan_prompt()
+  for i = 1, #(GS.plan.buf) do
+    draw_plan_tile(i)
+  end
+end
+
+-- On plan levels the bottom-corner HUD (legend and macro
+-- list) lifts above the reserved strip band.
+
+function hud_lift()
+  if cur_controls == plan then
+    return plan_band_h()
+  end
+  return 0
+end
+
+function draw_hud_corner()
+  gfx.push()
+  gfx.translate(0, -hud_lift())
+  draw_legend()
+  draw_macros_list()
+  gfx.pop()
+end
+
 -- Centered "<prefix> [Tab] <suffix>" banner, shared by the
 -- win and failed-run modals. draw_key restores the font.
 
@@ -325,6 +454,13 @@ function draw_level_indicator()
   gfx.print(label, x, m)
 end
 
+-- Win and failed-run modals; the win one hides the other.
+
+function draw_modals()
+  draw_celebrate()
+  draw_failed()
+end
+
 -- Draw everything on screen
 
 function draw_scene()
@@ -337,10 +473,9 @@ function draw_scene()
   draw_boxes()
   draw_player(GRID.scale)
   draw_echo()
-  draw_legend()
+  draw_hud_corner()
   draw_level_indicator()
-  draw_macros_list()
   draw_macro_ui()
-  draw_celebrate()
-  draw_failed()
+  draw_plan_strip()
+  draw_modals()
 end

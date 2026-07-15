@@ -12,6 +12,15 @@ function keys()
   ctrl_update = nil
 end
 
+-- Plan-a-path controls: keys collect as tiles at the
+-- bottom of the screen, Enter runs the plan.
+
+function plan()
+  ctrl_pressed = plan_key
+  ctrl_update = plan_update
+  plan_reset()
+end
+
 -- Command line controls
 
 -- Progression modes

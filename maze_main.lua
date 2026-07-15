@@ -16,6 +16,7 @@ require("core_anim")
 require("maze_logic")
 require("keyboard_graphics")
 require("macro")
+require("maze_plan")
 require("script")
 require("menu")
 
@@ -176,10 +177,13 @@ function love.keypressed(k)
   end
 end
 
-love.keyreleased = release_shift
+function love.keyreleased(k)
+  release_shift(k)
+  plan_key_up(k)
+end
 
 function love.resize()
   if GS.init and GS.mode == "game" then
-    init_grid(GRID.rows, GRID.cols)
+    init_grid(GRID.rows, GRID.cols, grid_opts())
   end
 end

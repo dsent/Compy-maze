@@ -44,6 +44,13 @@ SILENT_CMDS["."] = true
 SILENT_CMDS[","] = true
 SILENT_CMDS["<"] = true
 
+-- Plan-a-path buffer: tile capacity, tiles per row, and
+-- the run prompt.
+
+MAX_PLAN_LEN = 20
+PLAN_ROW_LEN = 10
+PLAN_PROMPT = "Press Enter to go!"
+
 -- Celebrate message: prefix + Tab keycap + suffix.
 
 CELEBRATE_PREFIX = "Congratulations! Press "

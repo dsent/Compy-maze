@@ -122,10 +122,19 @@ end
 
 -- Init
 
+-- Plan levels reserve a bottom band for the tile strip.
+
+function grid_opts()
+  if cur_controls == plan then
+    return { pad_bottom = plan_band_h() }
+  end
+end
+
 function reset_level()
-  init_grid(#maze, #(maze[1]))
+  init_grid(#maze, #(maze[1]), grid_opts())
   parse_maze()
   GS.failed = nil
+  plan_rewind()
 end
 
 function apply_attrs()
@@ -344,6 +353,8 @@ function on_fail()
     next_level()
   elseif cur_controls == editor then
     enter_failed("crash")
+  elseif cur_controls == plan then
+    plan_after_crash()
   else
     reset_level()
   end

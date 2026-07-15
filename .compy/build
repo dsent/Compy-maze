@@ -28,6 +28,7 @@ CORE="core_constants core_sprites core_render core_editor
 # Maze-only program. maze_main is the entry, emitted as
 # main.lua.
 MAZE="maze_constants maze_decorations maze_render maze_logic
+      maze_plan
       controls levels menu macro keyboard_graphics
       BOX_03 TARGET_02
       LABIRINT_NEW_01 LABIRINT_NEW_02 LABIRINT_NEW_03
