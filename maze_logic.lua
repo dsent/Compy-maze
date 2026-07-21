@@ -334,7 +334,7 @@ function step_level(cmd)
 end
 
 -- TEMPORARY: Shift+Esc cannot reach a program while the
--- editor input field is active (compy-dl0 / compy-mkr, gated
+-- editor input field is active (compy-maze-shift-esc-exit / compy-ide-input-esc-dataloss, gated
 -- on the editor API), so "<" exits a run to the menu in the
 -- meantime. Remove "<" when Shift+Esc works in the editor.
 
