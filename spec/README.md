@@ -1,20 +1,22 @@
-# Command-core spec
+# Headless specs
 
-Headless tests for the shared command core (`script.lua`):
-the parser, validator, loop/macro expansion, statement
-splitting, and enqueue. They run under plain `lua` 5.1.5 —
-no LÖVE, no device — so a failing case shows up in the
-terminal in under a second.
+Headless tests for the shared command core and Draw picture
+data. They run under plain `lua` 5.1.5 — no LÖVE, no device —
+so a failing case shows up in the terminal in under a second.
 
 ## Run
 
 From the repository root (also works from inside `spec/`):
 
     lua spec/script_spec.lua
+    lua spec/draw_levels_spec.lua
+    lua spec/draw_mode_spec.lua
 
 Output ends with a summary line:
 
     29 passed, 0 failed, 0 pending
+    8 passed, 0 failed, 0 pending
+    2 passed, 0 failed, 0 pending
 
 Exit code is `0` when nothing failed, non-zero otherwise,
 so the same command works in a CI check. A failure prints
@@ -42,8 +44,12 @@ the feature exists. When a feature lands, its
   time (`PRIMITIVES`, `SILENT_CMDS`, `macros`, `player`,
   `sfx`, `readfile`) plus a tiny assert/runner framework
   (`T.it`, `T.eq`, `T.pending`, `T.run`).
-- `script_spec.lua` — the cases. It loads the real
+- `script_spec.lua` — the command-core cases. It loads the real
   `script.lua` and `constants.lua`, never a copy.
+- `draw_levels_spec.lua` — exact target count, order, bounds,
+  trail-only routes, and target-edge matching.
+- `draw_mode_spec.lua` — Free draw's preserved command set and
+  picture mode's scoped next/previous commands.
 
 ## Scope
 

@@ -38,6 +38,12 @@ echo "  done"
 echo "== command-core spec (from repo) =="
 ( cd "$SRC" && "$LUA" spec/script_spec.lua ) || fail=1
 
+echo "== draw-level spec (from repo) =="
+( cd "$SRC" && "$LUA" spec/draw_levels_spec.lua ) || fail=1
+
+echo "== draw-mode spec (from repo) =="
+( cd "$SRC" && "$LUA" spec/draw_mode_spec.lua ) || fail=1
+
 echo "== self-contained (every require resolves in-folder) =="
 for d in maze draw; do
   reqs=$(grep -hoE 'require\("[^"]+"\)' "$TMP/$d"/*.lua \

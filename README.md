@@ -3,7 +3,8 @@
 This is the single source tree for two Compy programs:
 
 - **maze** — guide a robot through a maze (the original game);
-- **draw** — a command-driven drawing canvas on the same core.
+- **draw** — free drawing plus picture-copying tasks on the
+  same command core.
 
 A Compy project is a flat, self-contained folder launched by
 `run("name")`, with no runtime sharing between projects. So
@@ -21,7 +22,7 @@ governed by an external manifest (two entries, `maze` and
 here.
 
 See **BUILD.md** for the file layout and the full procedure,
-and **spec/** for the headless command-core tests. The
+and **spec/** for the headless command and level-data tests. The
 child-facing readme for each program is `README_maze.md` /
 `README_draw.md`; the build emits each as that folder's
 `README.md`.

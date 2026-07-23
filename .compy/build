@@ -36,7 +36,8 @@ MAZE="maze_constants maze_decorations maze_render maze_logic
 
 # Draw-only program. draw_main is the entry, emitted as
 # main.lua.
-DRAW="draw_constants draw_render"
+DRAW="draw_constants draw_levels draw_menu draw_render
+      keyboard_graphics"
 
 copy_lua() { for m in $2; do cp "$SRC/$m.lua" "$1/"; done; }
 

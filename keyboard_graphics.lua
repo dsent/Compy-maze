@@ -300,6 +300,25 @@ function draw_key(x, y, name)
   end
 end
 
+-- Centered "<prefix> [key] <suffix>" banner. The keycap
+-- renderer changes the font, so restore the caller's font
+-- before drawing the suffix.
+
+function draw_keycap_banner(prefix, key_name, suffix)
+  local w, h = gfx.getDimensions()
+  local font = gfx.getFont()
+  local pw = font:getWidth(prefix)
+  local sw = font:getWidth(suffix)
+  local kw, kh = width[key_name], height[key_name]
+  local x = (((w - pw) - kw) - sw) / 2
+  local ky = (h - kh) / 2
+  local ty = ky + (kh - font:getHeight()) / 2
+  gfx.print(prefix, x, ty)
+  draw_key(x + pw, ky, key_name)
+  gfx.setFont(font)
+  gfx.print(suffix, x + pw + kw, ty)
+end
+
 gap = { }
 for i, row in pairs(layout) do
   local sum = 0

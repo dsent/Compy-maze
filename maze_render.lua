@@ -432,24 +432,6 @@ function draw_hud_corner()
   gfx.pop()
 end
 
--- Centered "<prefix> [Tab] <suffix>" banner, shared by the
--- win and failed-run modals. draw_key restores the font.
-
-function draw_keycap_banner(prefix, suffix)
-  local w, h = gfx.getDimensions()
-  local font = gfx.getFont()
-  local pw = font:getWidth(prefix)
-  local sw = font:getWidth(suffix)
-  local kw, kh = width.tab, height.tab
-  local x = (((w - pw) - kw) - sw) / 2
-  local ky = (h - kh) / 2
-  local ty = ky + (kh - font:getHeight()) / 2
-  gfx.print(prefix, x, ty)
-  draw_key(x + pw, ky, "tab")
-  gfx.setFont(font)
-  gfx.print(suffix, x + pw + kw, ty)
-end
-
 -- Win modal.
 
 function draw_celebrate()
@@ -457,7 +439,8 @@ function draw_celebrate()
     return
   end
   gfx.setColor(Color[Color.white + Color.bright])
-  draw_keycap_banner(CELEBRATE_PREFIX, CELEBRATE_SUFFIX)
+  draw_keycap_banner(CELEBRATE_PREFIX, "tab",
+    CELEBRATE_SUFFIX)
 end
 
 -- Failed-run modal (miss / crash): a calm "not yet",
@@ -472,7 +455,7 @@ function draw_failed()
     prefix = FAILED_CRASH_PREFIX
   end
   gfx.setColor(Color[Color.white + Color.bright])
-  draw_keycap_banner(prefix, FAILED_SUFFIX)
+  draw_keycap_banner(prefix, "tab", FAILED_SUFFIX)
 end
 
 -- Level indicator: muted "Maze N" in a top corner.

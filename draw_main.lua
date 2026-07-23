@@ -1,9 +1,7 @@
 -- draw_main.lua
 
--- Draw: a command-driven drawing canvas on the shared
--- command core. The robot moves on an open 8 x 8 grid,
--- leaving a cumulative trail; C clears it. No walls, no
--- goal, no win, no fail.
+-- Draw contains two mini-games on the shared command core:
+-- the original cumulative free canvas and 20 picture tasks.
 
 require("core_constants")
 require("draw_constants")
@@ -14,23 +12,44 @@ require("core_editor")
 require("player")
 require("core_anim")
 require("script")
+require("keyboard_graphics")
+require("draw_levels")
+require("draw_menu")
 
 sfx = compy.audio
 
 echo_lines = { }
-
-cur_controls = editor
+macros = { }
+cur_controls = nil
+cur_legend = DRAW_LEGEND
 
 GS = {
   init = false,
+  screen = "menu",
+  draw_mode = nil,
+  level_index = nil,
+  hint = false,
+  won = false,
   running = false,
   base_macros = { }
 }
 
--- App hooks. The core names these; each program defines
--- its own. Draw has no goal and no level, so after_step
--- and before_run do nothing -- the trail and the robot
--- persist across runs.
+function currentDrawLevel()
+  if GS.draw_mode ~= "picture" then
+    return nil
+  end
+  return DRAW_LEVELS[GS.level_index]
+end
+
+function activeStart()
+  local level = currentDrawLevel()
+  if level then
+    return level.col, level.row, level.dir
+  end
+  return START.col, START.row, START.dir
+end
+
+-- App hooks named by the shared editor and animation core.
 
 function blocked(tc, tr)
   return tc < 1 or GRID.cols < tc or tr < 1 or GRID.rows < tr
@@ -44,10 +63,16 @@ end
 
 function finish_run()
   GS.running = false
+  local level = currentDrawLevel()
+  local matched = level and
+      tracesMatchTarget(player.traces, level)
+  if not matched then
+    return
+  end
+  GS.won = true
+  ctrl_update = nil
+  sfx.win()
 end
-
--- A move off the canvas is skipped silently: no trail, no
--- sound, and the remaining commands still run.
 
 function draw_move(cmd, ref)
   local tc, tr = move_cmd_target(cmd)
@@ -57,14 +82,42 @@ function draw_move(cmd, ref)
   start_forward(cmd, ref, tc, tr)
 end
 
--- C clears the trail and returns the robot to start; the
--- queue is untouched, so the program continues after it.
-
 function clear_canvas()
-  reset_robot(START.col, START.row, START.dir)
+  local col, row, dir = activeStart()
+  reset_robot(col, row, dir)
+  GS.won = false
+end
+
+function takeDrawLevelRepeats(cmd)
+  local count = 1
+  while player.queue[1] == cmd do
+    table.remove(player.queue, 1)
+    table.remove(player.queue_refs, 1)
+    count = count + 1
+  end
+  return count
+end
+
+function jumpPictureLevel(delta)
+  if GS.draw_mode ~= "picture" then
+    return
+  end
+  local index = clampDrawLevelIndex(GS.level_index + delta)
+  if index ~= GS.level_index then
+    GS.base_macros = clone_macros(macros)
+    GS.level_index = index
+  end
+  startPictureLevel()
+end
+
+function stepPictureLevel(cmd)
+  local sign = (cmd == ",") and -1 or 1
+  jumpPictureLevel(sign * takeDrawLevelRepeats(cmd))
 end
 
 CMD_HANDLERS = {
+  ["."] = stepPictureLevel,
+  [","] = stepPictureLevel,
   F = draw_move,
   B = draw_move,
   L = start_turn,
@@ -72,15 +125,11 @@ CMD_HANDLERS = {
   C = clear_canvas
 }
 
--- Height of the runtime's command-editor band: EDITOR_ROWS
--- text rows at the current font.
+-- Layout
 
 function editor_band_h()
   return EDITOR_ROWS * gfx.getFont():getHeight()
 end
-
--- Width to reserve on the right for the corner legend: its
--- widest line plus a margin.
 
 function legend_band_w()
   local font = gfx.getFont()
@@ -91,35 +140,105 @@ function legend_band_w()
   return wide + 2 * font:getHeight()
 end
 
--- Layout for the draw canvas: a margin of one text row
--- around the grid (so a single echo line fits above it),
--- the editor band below, and the grid centered between the
--- left margin and the legend reserved on the right.
+function picturePanelWidth()
+  local preview_w = gfx.getHeight() * PREVIEW_WIDTH_FRAC
+  return math.max(legend_band_w(), preview_w)
+end
 
 function draw_layout()
+  local right = legend_band_w()
+  if GS.draw_mode == "picture" then
+    right = picturePanelWidth()
+  end
   return {
     pad_bottom = editor_band_h(),
-    pad_right = legend_band_w(),
+    pad_right = right,
     margin = gfx.getFont():getHeight()
   }
 end
 
--- One fixed canvas, the robot seeded at start, the editor
--- armed. Done once, lazily, when the window is sized.
+-- Mini-game lifecycle
+
+function resetDrawProgramState()
+  echo_lines = { }
+  GS.invalid = nil
+  GS.program = nil
+  GS.running = false
+  GS.won = false
+  cur_controls = editor
+  cur_legend = DRAW_LEGEND
+  macros = clone_macros(GS.base_macros)
+end
+
+function startFreeDraw()
+  setPictureNavigationEnabled(false)
+  GS.level_index = nil
+  GS.hint = false
+  GS.base_macros = { }
+  resetDrawProgramState()
+  init_grid(CANVAS.rows, CANVAS.cols, draw_layout())
+  player_reset(START.col, START.row, START.dir)
+  editor()
+end
+
+function startPictureLevel()
+  local level = currentDrawLevel()
+  resetDrawProgramState()
+  GS.hint = level.hint
+  init_grid(CANVAS.rows, CANVAS.cols, draw_layout())
+  player_reset(level.col, level.row, level.dir)
+  editor()
+end
+
+function startPictureTasks()
+  setPictureNavigationEnabled(true)
+  GS.level_index = 1
+  GS.base_macros = { }
+  startPictureLevel()
+end
+
+function startDrawMode(mode)
+  GS.screen = "game"
+  GS.draw_mode = mode
+  if mode == "free" then
+    startFreeDraw()
+  else
+    startPictureTasks()
+  end
+end
+
+function toDrawMenu()
+  setPictureNavigationEnabled(false)
+  GS.screen = "menu"
+  GS.draw_mode = nil
+  GS.won = false
+  player.queue = { }
+  player.queue_refs = { }
+  ctrl_update = nil
+  ctrl_pressed = nil
+end
+
+function nextPictureLevel()
+  GS.base_macros = clone_macros(macros)
+  GS.level_index = GS.level_index + 1
+  if #DRAW_LEVELS < GS.level_index then
+    toDrawMenu()
+    return
+  end
+  startPictureLevel()
+end
+
+-- Main loop and input
 
 function ensure_init()
   if GS.init then
     return
   end
-  cur_legend = DRAW_LEGEND
-  init_grid(CANVAS.rows, CANVAS.cols, draw_layout())
-  player_reset(START.col, START.row, START.dir)
-  editor()
+  prepareDrawLevels()
   GS.init = true
 end
 
-function love.update(dt)
-  ensure_init()
+function stepDrawProgram(dt)
   if player.anim then
     advance_anim(dt)
   end
@@ -128,21 +247,89 @@ function love.update(dt)
   else
     execute_next()
   end
+end
+
+tab_was_down = false
+
+function pollPictureProgression()
+  local down = love.keyboard.isDown("tab")
+  local edge = down and not tab_was_down
+  if edge and GS.won then
+    nextPictureLevel()
+  end
+  tab_was_down = down
+end
+
+function love.update(dt)
+  ensure_init()
+  if GS.screen ~= "game" then
+    return
+  end
+  pollPictureProgression()
+  stepDrawProgram(dt)
   if ctrl_update then
-    ctrl_update()
+    ctrl_update(dt)
   end
 end
 
 function love.draw()
-  if not GS.init then
+  ensure_init()
+  if GS.screen == "menu" then
+    drawMenu()
+  else
+    draw_scene()
+  end
+end
+
+SYSTEM_KEYS = { }
+
+function SYSTEM_KEYS.menu()
+  if GS.draw_mode ~= "picture" then
     return
   end
-  draw_scene()
+  GS.hint = not GS.hint
+  sfx.sword()
+end
+
+love.mousepressed = SYSTEM_KEYS.menu
+
+function is_shift_down()
+  local down = love.keyboard.isDown
+  return down("lshift") or down("rshift")
+end
+
+function on_escape()
+  if GS.screen == "game" then
+    toDrawMenu()
+  end
+end
+
+function drawGameKey(key)
+  local fn = SYSTEM_KEYS[key]
+  if fn then
+    fn()
+  elseif ctrl_pressed then
+    ctrl_pressed(key)
+  end
+end
+
+function love.keypressed(key)
+  if key == "escape" then
+    if is_shift_down() then
+      on_escape()
+    end
+    return
+  end
+  if GS.screen == "menu" then
+    drawMenuKey(key)
+  else
+    drawGameKey(key)
+  end
 end
 
 function love.resize()
-  if not GS.init then
-    return
+  local active = GS.init and GS.screen == "game"
+  if active then
+    init_grid(CANVAS.rows, CANVAS.cols, draw_layout())
   end
-  init_grid(CANVAS.rows, CANVAS.cols, draw_layout())
 end
