@@ -115,9 +115,18 @@ function stepPictureLevel(cmd)
   jumpPictureLevel(sign * takeDrawLevelRepeats(cmd))
 end
 
+-- TEMPORARY: the typed exit registered in draw_constants.lua.
+-- Removed together with "<" when Shift+Esc reaches a program
+-- from an active editor field.
+
+function exitToDrawMenu()
+  toDrawMenu()
+end
+
 CMD_HANDLERS = {
   ["."] = stepPictureLevel,
   [","] = stepPictureLevel,
+  ["<"] = exitToDrawMenu,
   F = draw_move,
   B = draw_move,
   L = start_turn,

@@ -37,6 +37,17 @@ START = {
 PRIMITIVES.C = true
 SILENT_CMDS.C = true
 
+-- TEMPORARY: Shift+Esc cannot reach a program while the
+-- editor input field is active (compy-maze-shift-esc-exit /
+-- compy-ide-input-esc-dataloss, gated on the editor API), so
+-- "<" exits to the drawing-game menu in the meantime. Both
+-- mini-games register it: Free draw keeps its field active
+-- throughout, so it has no other way out. Remove "<" when
+-- Shift+Esc works in the editor.
+
+PRIMITIVES["<"] = true
+SILENT_CMDS["<"] = true
+
 -- Picture-task navigation matches Maze, while Free draw's
 -- original command language stays unchanged.
 

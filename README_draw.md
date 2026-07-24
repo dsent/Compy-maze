@@ -139,8 +139,13 @@ scale and coordinates as the playing field.
 
 ## Leaving
 
+  <         — return to the drawing-game menu
   Shift+Esc — return to the drawing-game menu
   Ctrl+Q    — leave Draw and return to the console
+
+Type < and press Enter to go back to the drawing-game menu.
+It works in both drawing games, and commands after it do not
+run.
 
 While the command field is active, the current Compy editor can
 consume Shift+Esc. It works while a program is running and after
