@@ -16,21 +16,27 @@ T.it("contains exactly 20 ordered tasks", function()
   T.eq(#DRAW_LEVELS, 20)
 end)
 
-T.it("starts with simple open shapes and ends with Dog", function()
-  T.eq(DRAW_LEVELS[1].name, "L")
-  T.eq(DRAW_LEVELS[2].name, "U")
-  T.eq(DRAW_LEVELS[3].name, "Square")
-  T.eq(DRAW_LEVELS[4].name, "Rectangle")
-  T.eq(DRAW_LEVELS[5].name, "Flag")
+T.it("starts with single strokes and ends with Dog", function()
+  T.eq(DRAW_LEVELS[1].name, "Line")
+  T.eq(DRAW_LEVELS[2].name, "Corner")
+  T.eq(DRAW_LEVELS[3].name, "Bowl")
+  T.eq(DRAW_LEVELS[4].name, "Square")
+  T.eq(DRAW_LEVELS[5].name, "Boot")
   T.eq(DRAW_LEVELS[20].name, "Dog")
 end)
 
-T.it("the first five tasks never retrace an edge", function()
-  for index = 1, 5 do
+T.it("the first seven tasks never retrace an edge", function()
+  for index = 1, 7 do
     local level = DRAW_LEVELS[index]
     T.eq(#level.edge_list, #level.points - 1,
       "retrace in early draw level " .. index .. ": " .. level.name)
   end
+end)
+
+T.it("retracing starts at T and is never needed earlier", function()
+  T.eq(DRAW_LEVELS[8].name, "T")
+  local level = DRAW_LEVELS[8]
+  T.eq(#level.edge_list < #level.points - 1, true)
 end)
 
 T.it("every task is a valid in-bounds trail", function()
@@ -63,8 +69,22 @@ function tracesFromRoute(level)
   return traces
 end
 
+-- Walking a task's own route must complete it. This is the
+-- proof that no picture needs the pen lifted: the route is a
+-- single trail, so every target is reachable with N/S/E/W
+-- alone and never with B.
+
+T.it("every task completes by walking its own route", function()
+  for index, level in ipairs(DRAW_LEVELS) do
+    local traces = tracesFromRoute(level)
+    T.eq(tracesMatchTarget(traces, level), true,
+      "route does not complete draw level " .. index ..
+      ": " .. level.name)
+  end
+end)
+
 T.it("repeated target traversal still matches", function()
-  local level = DRAW_LEVELS[6]
+  local level = DRAW_LEVELS[9]
   T.eq(level.name, "Plus")
   local traces = tracesFromRoute(level)
   T.eq(#level.edge_list < #traces, true)

@@ -11,9 +11,11 @@ Draw starts with two choices:
   2 — Draw the picture
 
 Free draw is the open canvas. Draw the picture is a series of
-20 tasks. The first five use one fresh line for every move;
-later pictures introduce retracing, and the series ends with
-a dog.
+20 tasks that get harder in steps: counting single strokes,
+then closed shapes, then a repeating step pattern, then the
+first pictures that send you back over a line you already
+drew, then sloped sides built from steps, and finally whole
+objects. It ends with a dog.
 
 ## Goal
 

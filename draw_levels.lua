@@ -1,24 +1,38 @@
 -- draw_levels.lua
 
--- Ordered picture tasks. Each route starts at the declared
--- cell and uses drawing moves only. Repeated edges are part
--- of the route when a branched picture needs backtracking.
+-- Ordered picture tasks, arranged as a ladder: stroke
+-- counting, closed shapes, a repeating step pattern, the
+-- first retracing, stepped slopes, then composite objects.
+-- Each route starts at the declared cell and uses drawing
+-- moves only, so every picture is one continuous trail with
+-- the pen down. Repeated edges are part of the route where a
+-- branched picture has to come back over itself.
 
 DRAW_LEVELS = {
+  -- Counting, one stroke at a time.
   {
-    name = "L",
+    name = "Line",
+    col = 2,
+    row = 5,
+    route = "5E",
+    hint = true
+  },
+  {
+    name = "Corner",
     col = 2,
     row = 2,
     route = "4S4E",
     hint = true
   },
   {
-    name = "U",
+    name = "Bowl",
     col = 2,
     row = 2,
     route = "4S4E4N",
     hint = true
   },
+
+  -- Closed shapes: the trail comes back to where it started.
   {
     name = "Square",
     col = 2,
@@ -27,123 +41,122 @@ DRAW_LEVELS = {
     hint = false
   },
   {
-    name = "Rectangle",
-    col = 2,
-    row = 3,
-    route = "4E2S4W2N",
+    name = "Boot",
+    col = 3,
+    row = 2,
+    route = "6S4E2N2W4N2W",
     hint = false
   },
   {
     name = "Flag",
     col = 2,
-    row = 6,
-    route = "4N4E2S4W",
+    row = 8,
+    route = "6N3E2S3W",
     hint = false
   },
+
+  -- A repeating step pattern, then the first retracing.
   {
-    name = "Plus",
-    col = 4,
-    row = 2,
-    route = "2S2W4E2W2S",
+    name = "Steps",
+    col = 2,
+    row = 7,
+    route = "NENENENE",
     hint = true
   },
   {
     name = "T",
-    col = 2,
+    col = 6,
     row = 2,
-    route = "4E2W4S",
+    route = "4W2E5S",
     hint = true
   },
+  {
+    name = "Plus",
+    col = 4,
+    row = 6,
+    route = "4N2S2W4E",
+    hint = false
+  },
+
+  -- Sloped sides built from steps, and the first composites.
+  {
+    name = "Mountain",
+    col = 3,
+    row = 2,
+    route = "SESESESESES7W2NE3NE",
+    hint = true
+  },
+  {
+    name = "Mug",
+    col = 5,
+    row = 4,
+    route = "N3W4S3E3NESW",
+    hint = false
+  },
+  {
+    name = "House",
+    col = 4,
+    row = 8,
+    route = "2W4NENENESESE4S3W2NE2S",
+    hint = true
+  },
+
+  -- Objects. Stroke count and retracing grow together.
   {
     name = "Arrow",
     col = 2,
     row = 4,
-    route = "4ENWNWESESSWSW",
-    hint = true
-  },
-  {
-    name = "House",
-    col = 2,
-    row = 6,
-    route = "2NENENESE3S4W",
-    hint = true
-  },
-  {
-    name = "Tree",
-    col = 4,
-    row = 2,
-    route = "SWSWSE2S2E2NENWNWN",
+    route = "5ENWNWESE2SWSW",
     hint = false
   },
   {
-    name = "Glasses",
+    name = "Heart",
     col = 1,
     row = 3,
-    route = "2E2S2W2N2ES2EN2E2S2WN",
+    route = "3SESESENENENE3N2WSWN2WSW",
     hint = true
-  },
-  {
-    name = "Fish",
-    col = 2,
-    row = 3,
-    route = "3ESENENSWSWESESNWNWS3W2N",
-    hint = false
-  },
-  {
-    name = "Boat",
-    col = 2,
-    row = 5,
-    route = "4EWS2WWN2E4N2E3S2WS",
-    hint = false
   },
   {
     name = "Car",
-    col = 2,
-    row = 5,
-    route = "2N4E2SESWN3WSWN",
-    hint = true
-  },
-  {
-    name = "Rocket",
-    col = 4,
+    col = 6,
     row = 7,
-    route = "6NESE3SES2WSWWN2WNE3NENE",
+    route = "4WSEN2W2N2E2N3E2S2E2S2WSEN",
     hint = false
   },
   {
-    name = "Crown",
-    col = 2,
-    row = 6,
-    route = "4NE2SE2NE2SE2NE4S5W",
-    hint = false
-  },
-  {
-    name = "Snail",
-    col = 1,
-    row = 6,
-    route = "5EENNW2N3W3S2E2NWS",
+    name = "Fish",
+    col = 3,
+    row = 4,
+    route = "2EN2ESE2SWS4W3NWNW4SENE",
     hint = true
   },
   {
     name = "Cat",
-    col = 2,
-    row = 6,
-    route = "4NESENESE3SENWS2WNWSW",
+    col = 7,
+    row = 8,
+    route = "5WNE4NEWNESENESWE3SE2SE2N",
     hint = false
   },
   {
-    name = "Butterfly",
-    col = 4,
-    row = 2,
-    route = "2S2W2NESES2E2NWSWS2W2SENEN2E2SWNWN3S",
+    name = "Rocket",
+    col = 2,
+    row = 4,
+    route = "3SWSENS6ENWS5NWNWNWSWSWS5E",
+    hint = false
+  },
+  {
+    name = "Boat",
+    col = 3,
+    row = 5,
+    route = "5EN2WNWNWNW5S2WESES4ENEN5W",
     hint = false
   },
   {
     name = "Dog",
     col = 1,
-    row = 4,
-    route = "ES2N3ENENE2SESW2SWN2W2SW2NW",
-    hint = false
+    row = 2,
+    route = "SE3SE2SE2N2E2SE3NE3N2W2S4W",
+    hint = true
   }
 }
 
