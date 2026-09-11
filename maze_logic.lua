@@ -175,6 +175,7 @@ end
 
 function start_level()
   apply_attrs()
+  compy.input.hide()
   reset_level()
   echo_lines = { }
   GS.crash = nil
@@ -333,11 +334,6 @@ function step_level(cmd)
   jump_level(sign * take_repeats(cmd))
 end
 
--- TEMPORARY: Shift+Esc cannot reach a program while the
--- editor input field is active (compy-maze-shift-esc-exit / compy-ide-input-esc-dataloss, gated
--- on the editor API), so "<" exits a run to the menu in the
--- meantime. Remove "<" when Shift+Esc works in the editor.
-
 function exit_to_menu()
   to_menu()
 end
@@ -438,4 +434,3 @@ function reset_after_fail()
   macros = clone_macros(GS.base_macros)
   rearm_editor()
 end
-

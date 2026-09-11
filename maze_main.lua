@@ -70,29 +70,60 @@ end
 
 -- Main Loop
 
-tab_was_down = false
+-- Tab moves the level on: forward after a win, back to the
+-- start after a failed run, and a plain restart otherwise.
+--
+-- ignore_repeat, or a held Tab walks through the levels.
+-- side_run, so the press travels on afterwards and still
+-- reaches the command widget on editor levels.
+--
+-- Every modifier combination is listed because a shortcut
+-- matches its modifiers exactly, and this gesture answers
+-- to all of them. Drop the ones nobody meant, if any.
+-- alt+tab is listed for completeness -- the desktop
+-- usually takes it before any program sees it.
 
-function poll_tab_progression()
-  local down = love.keyboard.isDown("tab")
-  local edge = down and not tab_was_down
-  if edge then
-    if GS.celebrating or GS.won then
-      next_level()
-    elseif GS.failed then
-      reset_after_fail()
-    else
-      reset_level()
-    end
+TAB_COMBOS = {
+  "tab",
+  "shift+tab",
+  "ctrl+tab",
+  "alt+tab",
+  "ctrl+shift+tab",
+  "ctrl+alt+tab",
+  "alt+shift+tab",
+  "ctrl+alt+shift+tab"
+}
+
+function tab_progression()
+  if GS.mode ~= "game" then
+    return
   end
-  tab_was_down = down
+  if GS.celebrating or GS.won then
+    next_level()
+  elseif GS.failed then
+    reset_after_fail()
+  else
+    reset_level()
+  end
 end
 
--- Return to the start menu, dropping game input.
+for _, combo in ipairs(TAB_COMBOS) do
+  compy.input.shortcuts.keypressed[combo] =
+      compy.input.fn.side_run(
+        compy.input.fn.ignore_repeat(tab_progression))
+end
+
+-- Return to the start menu, dropping game input. The
+-- command widget goes with it: nothing else can hide one,
+-- so a widget left shown here would sit over the menu for the
+-- rest of the session, taking a share of every key the menu
+-- is trying to read.
 
 function to_menu()
   GS.mode = "menu"
   ctrl_update = nil
   ctrl_pressed = nil
+  compy.input.hide()
 end
 
 -- Advance the running program one frame: progress any
@@ -115,7 +146,6 @@ function love.update(dt)
   if GS.mode ~= "game" then
     return
   end
-  poll_tab_progression()
   step_program(dt)
   if ctrl_update then
     ctrl_update(dt)
@@ -140,19 +170,33 @@ function SYSTEM_KEYS.menu()
   sfx.sword()
 end
 
-love.mousepressed = SYSTEM_KEYS.menu
-
-function is_shift_down()
-  local d = love.keyboard.isDown
-  return d("lshift") or d("rshift")
+-- A hook rather than love.mousepressed: this program shows the
+-- command widget on editor levels, and a handler captured from
+-- love.* consumes its channel outright, leaving nothing for
+-- anything below it (doc/input_api.md, "Event hooks and
+-- shortcuts -- when to use which"). Every click toggles the
+-- grid here, so every click is claimed.
+compy.input.hooks.mousepressed = function()
+  SYSTEM_KEYS.menu()
+  return true
 end
 
 -- Shift+Esc steps back one level within the game: a game
 -- level returns to the track menu; the menu is the top
 -- level, so it is a no-op there (UX standard -- leaving the
--- game to the console is Ctrl+Esc / the host). On editor
--- levels the text modal consumes keys, so this reaches us
--- only on direct-control levels and the menu.
+-- game to the console is Ctrl+Esc / the host).
+--
+-- A combo rather than a test inside the key handler, which
+-- is what makes it reach editor levels: a combo is offered
+-- the key before the command widget is, so a shown widget
+-- cannot hide the gesture. The typed "<" command stays too.
+--
+-- stop_here, or the same press also reaches the widget and
+-- clears it -- one keystroke leaving the game AND wiping
+-- the draft behind it.
+--
+-- No repeat filter, deliberately: a second firing finds
+-- GS.mode already off "game" and does nothing.
 
 function on_escape()
   if GS.mode == "game" then
@@ -160,32 +204,56 @@ function on_escape()
   end
 end
 
-function game_key(k)
+compy.input.shortcuts.keypressed["shift+escape"] =
+    compy.input.fn.stop_here(on_escape)
+
+-- The whole press is passed on, not just the key name: the
+-- plan buffer needs to know whether it is a fresh press or
+-- the keyboard repeating, and only the press itself can say
+-- so. Direct-control levels ignore the extra arguments and
+-- keep repeating, which is how holding a direction has
+-- always queued a run of moves there.
+
+function game_key(k, sk, isrepeat)
   local fn = SYSTEM_KEYS[k]
   if fn then
     fn()
   elseif ctrl_pressed then
-    ctrl_pressed(k)
+    ctrl_pressed(k, sk, isrepeat)
   end
 end
 
-function love.keypressed(k)
+-- A hook rather than love.keypressed, because combos are
+-- registered on this same channel above: Shift+Esc and the
+-- Tab family are offered every press first and may take it,
+-- so this does not see them all -- and a plain callback
+-- would read as though it did. The other channels stay
+-- callbacks; nothing is registered ahead of them.
+--
+-- Bare Escape stops here and goes no further; the shifted
+-- form was taken by a combo before this ran.
+
+compy.input.hooks.keypressed = function(k, sk, isrepeat)
   if k == "escape" then
-    if is_shift_down() then
-      on_escape()
-    end
     return
   end
   if GS.mode == "menu" then
     menu_key(k)
   else
-    game_key(k)
+    game_key(k, sk, isrepeat)
   end
 end
 
-function love.keyreleased(k)
+-- Also a hook, and deliberately WITHOUT a return. Releasing
+-- Shift ENDS a macro recording (macro.lua, release_shift):
+-- an edge, not remembered state -- whether Shift is down is
+-- asked of the keyboard, in handle_key. So this claims
+-- nothing and the release goes on to whatever is below it.
+-- As love.keyreleased it would have consumed the channel
+-- (doc/input_api.md, "Event hooks and shortcuts -- when to use
+-- which").
+compy.input.hooks.keyreleased = function(k)
   release_shift(k)
-  plan_key_up(k)
 end
 
 function love.resize()

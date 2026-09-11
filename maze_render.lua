@@ -218,7 +218,7 @@ function draw_macro_body(x, y)
 end
 
 function draw_macro_ui()
-  if macro_state.shift_held then
+  if Key.shift() then
     draw_dim()
   end
   if not macro_state.recording then

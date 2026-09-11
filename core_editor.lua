@@ -40,12 +40,54 @@ function input_prompt()
   return "Commands:"
 end
 
-function process_user_input()
-  if GS.input:is_empty() then
-    rearm_input()
+-- Submitting is an event: the runtime calls
+-- on_text_entered with the entered text.
+
+function submit_program(text)
+  start_program(text)
+end
+
+-- Up at the first-line boundary recalls the last program,
+-- but only when one exists. Down at the last-line boundary
+-- does nothing, so recall stays lossless. Ordinary cursor
+-- motion inside the program is left to the widget.
+
+function program_limit_reached(direction)
+  if direction ~= "up" or not GS.program then
     return
   end
-  start_program(string.unlines(GS.input()))
+  compy.input.set_text(string.lines(GS.program))
+end
+
+-- The prompt is written only where it genuinely changes:
+-- arming a level, rejecting a program, and ending a run.
+-- Watching for a change instead would mean remembering the
+-- previous value to compare against.
+--
+-- show() only shows: over an already-shown widget it is
+-- ignored and cannot change the prompt. Reconfigure is what
+-- changes a live widget, and the text is set separately.
+--
+-- "Widget" is compy.input's own name for it; this repo's own
+-- prose calls the same thing the command field. Comments
+-- written here on the input branch use the platform's word.
+
+function open_editor(text)
+  compy.input.show{
+    prompt = input_prompt(),
+    text = string.lines(text),
+    on_text_entered = submit_program,
+    on_limit_reached = program_limit_reached,
+  }
+end
+
+function set_prompt(text)
+  if compy.input.is_shown() then
+    compy.input.configure{ prompt = input_prompt() }
+    compy.input.set_text(string.lines(text))
+  else
+    open_editor(text)
+  end
 end
 
 -- The reject path: a failed validation keeps the typed
@@ -56,7 +98,7 @@ function reject_program(text, bad, lines)
   GS.invalid = bad
   GS.program = text
   echo_lines = lines
-  input_text(input_prompt(), lines)
+  set_prompt(text)
 end
 
 -- Any submit clears the previous run's crash marker; it
@@ -81,25 +123,47 @@ function start_program(text)
   GS.running = true
 end
 
+function editor_idle()
+  return not player.anim and 0 == #(player.queue)
+end
+
+-- Still a poll, and the game's own question rather than the
+-- editor's: has the queue drained? Nothing raises an event
+-- for an animation ending.
+--
+-- The widget comes back here because this is the moment the
+-- run ends -- once, not once per frame. Which runs get it
+-- back is finish_run's decision, read from what it leaves
+-- behind: a win starts an animation, a miss drops
+-- ctrl_update, and a crash does neither -- that is the case
+-- the child edits and retries from.
+
 function rearm_input()
-  if player.anim or 0 < #(player.queue) then
+  if not editor_idle() then
     return
   end
-  if GS.running then
-    finish_run()
-  else
-    input_text(input_prompt(), string.lines(GS.program or ""))
+  if not GS.running then
+    return
+  end
+  finish_run()
+  if ctrl_update and editor_idle() then
+    set_prompt(GS.program or "")
   end
 end
 
 -- Arm the command editor with initial text. editor()
 -- starts empty; rearm_editor() keeps the last program.
+--
+-- It goes through set_prompt rather than opening directly:
+-- a level can arm while a widget from the previous one is
+-- still shown, and showing over a shown widget is ignored --
+-- which would silently drop both the text and the label
+-- this was called to set.
 
 function arm_editor(text)
   ctrl_pressed = nil
-  ctrl_update = process_user_input
-  GS.input = user_input()
-  input_text("Commands:", string.lines(text))
+  ctrl_update = rearm_input
+  set_prompt(text)
 end
 
 function editor()

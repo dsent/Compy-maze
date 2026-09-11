@@ -147,6 +147,6 @@ Type < and press Enter to go back to the drawing-game menu.
 It works in both drawing games, and commands after it do not
 run.
 
-While the command field is active, the current Compy editor can
-consume Shift+Esc. It works while a program is running and after
-a completed picture. Ctrl+Q always leaves through the host.
+It works while editing, while a program is running, and after
+a completed picture. Bare Escape preserves your draft.
+Ctrl+Q always leaves through the host.

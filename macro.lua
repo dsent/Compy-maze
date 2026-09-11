@@ -2,14 +2,8 @@
 
 -- Keyboard macro recording and playback
 
-SHIFT_KEYS = {
-  lshift = true,
-  rshift = true
-}
-
 macro_state = {
   recording = false,
-  shift_held = false,
   name = nil,
   body = { }
 }
@@ -69,13 +63,23 @@ end
 
 -- Handle non-escape key presses
 
+-- Whether Shift is down is asked of the keyboard, not
+-- remembered from its press. A remembered flag survives a
+-- release that never arrives -- a window losing focus with
+-- the key down -- and then every later key starts a
+-- recording instead of running, dimmed for the rest of the
+-- session with no way back but a restart.
+--
+-- With both Shift keys: holding two and releasing one keeps
+-- the keyboard's answer true, so the next key still names a
+-- macro, which is what the dimmed screen is showing.
+
 function handle_key(k)
-  if SHIFT_KEYS[k] then
-    macro_state.shift_held = true
+  if Key.is_shift(k) then
     return
   elseif macro_state.recording then
     record_key(k)
-  elseif macro_state.shift_held then
+  elseif Key.shift() then
     start_recording(k)
   else
     execute_key(k)
@@ -84,9 +88,12 @@ end
 
 -- Handle shift release
 
+-- The release still ends a recording: that is a genuine
+-- edge, not a piece of remembered state, and letting go is
+-- how a child says the macro is done.
+
 function release_shift(k)
-  if SHIFT_KEYS[k] then
-    macro_state.shift_held = false
+  if Key.is_shift(k) then
     finish_recording()
   end
 end

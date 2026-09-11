@@ -216,6 +216,11 @@ function startDrawMode(mode)
   end
 end
 
+-- The command widget goes with the screen: nothing else can
+-- hide one, so a widget left shown here would sit over the
+-- menu for the rest of the session, taking a share of every
+-- key the menu is trying to read.
+
 function toDrawMenu()
   setPictureNavigationEnabled(false)
   GS.screen = "menu"
@@ -225,6 +230,8 @@ function toDrawMenu()
   player.queue_refs = { }
   ctrl_update = nil
   ctrl_pressed = nil
+  compy.input.hide()
+  armDrawMenuGuards()
 end
 
 function nextPictureLevel()
@@ -258,15 +265,41 @@ function stepDrawProgram(dt)
   end
 end
 
-tab_was_down = false
+-- Tab moves on to the next picture once this one is done.
+-- A shortcut reaches it even while the command editor is
+-- open, which Free draw never closes.
+--
+-- ignore_repeat, or a held Tab walks through the pictures;
+-- side_run, so the press still travels on to the widget.
+-- Every modifier combination is listed because a shortcut
+-- matches its modifiers exactly, and this gesture answers
+-- to all of them. alt+tab is listed for completeness; the
+-- desktop usually takes it first.
 
-function pollPictureProgression()
-  local down = love.keyboard.isDown("tab")
-  local edge = down and not tab_was_down
-  if edge and GS.won then
+TAB_COMBOS = {
+  "tab",
+  "shift+tab",
+  "ctrl+tab",
+  "alt+tab",
+  "ctrl+shift+tab",
+  "ctrl+alt+tab",
+  "alt+shift+tab",
+  "ctrl+alt+shift+tab"
+}
+
+function tabProgression()
+  if GS.screen ~= "game" then
+    return
+  end
+  if GS.won then
     nextPictureLevel()
   end
-  tab_was_down = down
+end
+
+for _, combo in ipairs(TAB_COMBOS) do
+  compy.input.shortcuts.keypressed[combo] =
+      compy.input.fn.side_run(
+        compy.input.fn.ignore_repeat(tabProgression))
 end
 
 function love.update(dt)
@@ -274,7 +307,6 @@ function love.update(dt)
   if GS.screen ~= "game" then
     return
   end
-  pollPictureProgression()
   stepDrawProgram(dt)
   if ctrl_update then
     ctrl_update(dt)
@@ -300,18 +332,42 @@ function SYSTEM_KEYS.menu()
   sfx.sword()
 end
 
-love.mousepressed = SYSTEM_KEYS.menu
-
-function is_shift_down()
-  local down = love.keyboard.isDown
-  return down("lshift") or down("rshift")
+-- A hook rather than love.mousepressed: Free draw keeps its
+-- command widget shown for the whole mode, and a handler
+-- captured from love.* consumes the channel outright
+-- (doc/input_api.md, "Event hooks and shortcuts -- when to use
+-- which"). Claimed only where it acts -- the hint toggle is a
+-- picture-mode gesture, and elsewhere the click is not ours.
+-- The mode test mirrors menu()'s own, which stays because the
+-- key path calls it too; here it is what lets the return be
+-- honest.
+compy.input.hooks.mousepressed = function()
+  if GS.draw_mode ~= "picture" then
+    return
+  end
+  SYSTEM_KEYS.menu()
+  return true
 end
+
+-- Shift+Esc steps back to this program's menu. A combo
+-- rather than a test inside the key handler, which is what
+-- makes it reach Free draw at all: that mode keeps its
+-- command widget shown the whole time, and a combo is
+-- offered the key before the widget is. The typed "<" exit
+-- stays.
+--
+-- stop_here, or the same press also reaches the widget and
+-- clears it: one keystroke leaving the game and wiping the
+-- drawing's program behind it.
 
 function on_escape()
   if GS.screen == "game" then
     toDrawMenu()
   end
 end
+
+compy.input.shortcuts.keypressed["shift+escape"] =
+    compy.input.fn.stop_here(on_escape)
 
 function drawGameKey(key)
   local fn = SYSTEM_KEYS[key]
@@ -322,11 +378,13 @@ function drawGameKey(key)
   end
 end
 
-function love.keypressed(key)
+-- A hook rather than love.keypressed, because combos are
+-- registered on this same channel above: Shift+Esc and the
+-- Tab family are offered every press first and may take it,
+-- so this does not see them all.
+
+compy.input.hooks.keypressed = function(key)
   if key == "escape" then
-    if is_shift_down() then
-      on_escape()
-    end
     return
   end
   if GS.screen == "menu" then
@@ -335,6 +393,10 @@ function love.keypressed(key)
     drawGameKey(key)
   end
 end
+
+-- The game boots on the menu, so its echo guards are armed once
+-- here at load; toDrawMenu re-arms them on every return.
+armDrawMenuGuards()
 
 function love.resize()
   local active = GS.init and GS.screen == "game"

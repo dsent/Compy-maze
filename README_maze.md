@@ -152,6 +152,8 @@ names — those are already commands.
 
 Press Shift+Enter to type several lines at once. All
 lines run in order when you press Enter.
+Press Up at the start of the first line to recall your
+last program.
 
 #### If Something Is Wrong
 
@@ -246,11 +248,10 @@ any commands after it are not run.
   Ctrl+Esc  — exit to the console
   <         — leave a running program back to the menu
 
-While you are typing in the editor, Shift+Esc cannot
-get through, so type < and press Enter to leave a
-running program. Bare Escape does nothing in Key
-Mode; in the editor it clears whatever you have
-typed, so watch out for an accidental right-click.
+Type < and press Enter to leave a running program.
+Bare Escape preserves your draft in the editor, while
+Shift+Esc can take you back to the menu even while
+editing.
 
 ## Grid
 

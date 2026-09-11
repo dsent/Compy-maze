@@ -43,3 +43,28 @@ function drawMenuKey(key)
     end
   end
 end
+
+-- The menu reads its choice on keypressed, but a bare digit key
+-- also arrives as textinput, and the choice shows the command
+-- widget in the same press -- so without a guard the digit
+-- echoes into the widget it just opened (doc/input_api.md,
+-- "Worked example: the trigger key echoes into the widget it
+-- showed"). A one-time textinput shortcut per menu key swallows
+-- that echo whichever side of the show LÖVE delivers it, and the
+-- first to fire clears the whole set so none lingers into the
+-- mode to be typed as a command.
+
+function clearDrawMenuGuards()
+  for _, choice in ipairs(DRAW_MODES) do
+    compy.input.shortcuts.textinput[choice.key] = nil
+  end
+end
+
+function armDrawMenuGuards()
+  for _, choice in ipairs(DRAW_MODES) do
+    compy.input.shortcuts.textinput[choice.key] = function()
+      clearDrawMenuGuards()
+      return true
+    end
+  end
+end

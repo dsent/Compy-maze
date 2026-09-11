@@ -13,14 +13,11 @@
 -- the next edit or submit; hold delays the miss reset so
 -- the end position can be seen.
 
-plan_held = { }
-
 function plan_reset()
   GS.plan = {
     buf = { },
     done = 0
   }
-  plan_held = { }
 end
 
 -- Any level reset sends the robot home, so the whole
@@ -134,21 +131,21 @@ function plan_dispatch(k)
   end
 end
 
--- A held key repeats keypresses; act on the edge only.
+-- A held key repeats keypresses; act on the edge only. The
+-- runtime marks a repeat as one, so the press itself says
+-- whether it is fresh -- where tracking which keys are down
+-- refuses a direction for the rest of the session if its
+-- release goes missing, as it does when a window loses
+-- focus with the key held.
 
-function plan_key(k)
-  if plan_held[k] then
+function plan_key(k, _, isrepeat)
+  if isrepeat then
     return
   end
-  plan_held[k] = true
   if plan_locked() then
     return
   end
   plan_dispatch(k)
-end
-
-function plan_key_up(k)
-  plan_held[k] = nil
 end
 
 -- Advance the green highlight as the queue drains.
