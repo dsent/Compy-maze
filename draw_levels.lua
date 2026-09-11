@@ -81,16 +81,16 @@ DRAW_LEVELS = {
   -- Sloped sides built from steps, and the first composites.
   {
     name = "Mountain",
-    col = 3,
-    row = 2,
-    route = "SESESESESES7W2NE3NE",
+    col = 1,
+    row = 6,
+    route = "NENENENESESESES7W",
     hint = true
   },
   {
     name = "Mug",
-    col = 5,
-    row = 4,
-    route = "N3W4S3E3NESW",
+    col = 2,
+    row = 3,
+    route = "3ES2E2S2WS3W4N3E4S",
     hint = false
   },
   {
@@ -111,9 +111,9 @@ DRAW_LEVELS = {
   },
   {
     name = "Heart",
-    col = 1,
+    col = 4,
     row = 3,
-    route = "3SESESENENENE3N2WSWN2WSW",
+    route = "N2WSW2SESESESENENENE2NWN2WSW",
     hint = true
   },
   {
@@ -125,23 +125,23 @@ DRAW_LEVELS = {
   },
   {
     name = "Fish",
-    col = 3,
-    row = 4,
-    route = "2EN2ESE2SWS4W3NWNW4SENE",
+    col = 1,
+    row = 3,
+    route = "ESENEN2ESESESWSWS2WNWNWSW3N",
     hint = true
   },
   {
     name = "Cat",
-    col = 7,
-    row = 8,
-    route = "5WNE4NEWNESENESWE3SE2SE2N",
+    col = 2,
+    row = 2,
+    route = "ES2ENE4SE2NE3S6WNE2NW2N",
     hint = false
   },
   {
     name = "Rocket",
-    col = 2,
-    row = 4,
-    route = "3SWSENS6ENWS5NWNWNWSWSWS5E",
+    col = 4,
+    row = 1,
+    route = "ESE3SESES2WNW2SW2NWS2WNENE3NENSWS3E",
     hint = false
   },
   {
@@ -153,9 +153,9 @@ DRAW_LEVELS = {
   },
   {
     name = "Dog",
-    col = 1,
-    row = 2,
-    route = "SE3SE2SE2N2E2SE3NE3N2W2S4W",
+    col = 2,
+    row = 4,
+    route = "3E2N2ESESW2SW2SW2N2W2SW3NW2NES",
     hint = true
   }
 }
